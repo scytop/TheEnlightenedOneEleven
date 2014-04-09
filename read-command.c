@@ -82,7 +82,7 @@ while( c = get_next_byte(get_next_byte_argument) && c != EOF)
 			prev_c = c;
 		}
 	}
-*arraySize = maxArrayElem;
+*arraySize = maxArrayElem+1;
 return stringArray;
 
 }
