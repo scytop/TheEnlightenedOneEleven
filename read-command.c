@@ -2,20 +2,41 @@
 
 #include "command.h"
 #include "command-internals.h"
+#include <stdio.h>
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <error.h>
 
 
-#define DEFAULT_BUFFER_SIZE 500
+#define DEFAULT_BUFFER_SIZE 50
 /* FIXME: You may need to add #include directives, macro definitions,
    static function definitions, etc.  */
 
 /* FIXME: Define the type 'struct command_stream' here.  This should
    complete the incomplete type declaration in command.h.  */
 
+void destroyBeginSpaces(char * input){
+	int spacesToMove = 0;
+	for(int i = 0; i < strlen(input); i++)
+	{
+		if (input[i] == ' ')
+			spacesToMove++;
+		else
+			break;
+	}
+	memmove(input, input+spacesToMove, strlen(input));
+}
 
+void destroyEndSpaces(char * input){
+	for(int i = strlen(input)-1; i >= 0; i++)
+	{
+		if(input[i] == ' ')
+			input[i] = '\n';
+		else
+			break;
+	}
+}
 
 bool isOperand(char c)
 {
@@ -40,7 +61,7 @@ char c;
 char prev_c = '\0';
 
 char * currentString = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
-char ** stringArray = malloc(sizeof(char*) * DEFAULT_BUFFER_SIZE);
+char ** stringArray = malloc(sizeof(char*) * DEFAULT_BUFFER_SIZE*10);
 int currentPos = 0;
 int maxArrayElem = 0;
 
@@ -82,7 +103,20 @@ while( c = get_next_byte(get_next_byte_argument) && c != EOF)
 			prev_c = c;
 		}
 	}
-*arraySize = maxArrayElem+1;
+//at EOF, push current string onto the array
+strcat(currentString, '\0');
+stringArray[maxArrayElem] = currentString;
+maxArrayElem++;
+currentString = malloc(sizeof(char)*2);
+currentString[0] = '\0';
+stringArray[maxArrayElem] = currentString;
+for(int i = 0; i < maxArrayElem; i++)
+	{
+	destroyBeginSpaces(stringArray[i]);
+	destroyEndSpaces(stringArray[i]);
+	}
+
+*arraySize = maxArrayElem;
 return stringArray;
 
 }
