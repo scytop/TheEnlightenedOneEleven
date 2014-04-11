@@ -73,8 +73,7 @@ void parseShitPls(char **stringArray, int arrSize){
 	comStack.size = 0;
 	comStack.max_size = 5;
 
-	//////////////////////////
-	//TODO: what if double \n
+	//make node + pointer to current node
 	node first;
 	first.next = NULL;
 	node *curNode;
@@ -112,13 +111,21 @@ void parseShitPls(char **stringArray, int arrSize){
 			continue;
 		}
 
-		//we have at least two newlines
+		//we have at least two newlines, make new node
 		if(stringArray[k][0] == '\n' && stringArray[k][1] == '\n'){
+			while(opStack.peek() != NULL){
+				command_t operator = opStack.pop();
+				command_t command2 = comStack.pop();
+				command_t command1 = comStack.pop();
+				command_t newCommand = combineCommand(command1, command2, operator);
+				comStack.push(newCommand);
+			}
 			node *newNode = malloc(sizeof(node));
 			newNode->next = NULL;
 			curNode->next = newNode;
 			curNode->command = comStack.pop();
 			curNode = newNode;
+			continue;
 		}
 
 		command_t curCommand = makeCommand(stringArray[k], comType);
@@ -127,7 +134,7 @@ void parseShitPls(char **stringArray, int arrSize){
 		else if(curCommand->type == SUBSHELL_COMMAND) //encounter open paren
 			opStack.push(curCommand);
 		else{
-			if(opStack.size == 0)
+			if(opStack.peek() == NULL)
 				opStack.push(curCommand);
 			else{
 				if(precedence(curCommand) > precedence(opStack.peek()))
@@ -148,6 +155,8 @@ void parseShitPls(char **stringArray, int arrSize){
 			}
 		}
 	}
+	//pop off everything left at the end, should not have any parens/newlines on the stack by now
+	//[if there is I fucked up]
 	while(opStack.peek() != NULL){
 		command_t operator = opStack.pop();
 		command_t command2 = comStack.pop();
