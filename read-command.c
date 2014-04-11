@@ -32,7 +32,7 @@ void destroyEndSpaces(char * input){
 	for(int i = strlen(input)-1; i >= 0; i--)
 	{
 		if(input[i] == ' ')
-			input[i] = '\n';
+			input[i] = '\0';
 		else
 			return;
 	}
