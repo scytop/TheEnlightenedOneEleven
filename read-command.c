@@ -34,7 +34,7 @@ void destroyEndSpaces(char * input){
 		if(input[i] == ' ')
 			input[i] = '\n';
 		else
-			break;
+			return;
 	}
 }
 
