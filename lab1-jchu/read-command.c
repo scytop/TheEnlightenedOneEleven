@@ -63,7 +63,7 @@ init_stack (int max)
   new->max_size = max;
   new->commands = malloc (max * sizeof (command_t));
 	return new;
-
+}
 
 
 
@@ -358,7 +358,7 @@ command_stream_t parseShitPls(char **stringArray, unsigned int arrSize){
 
 	struct command_stream *cstream = malloc(sizeof(struct command_stream)); 
 	cstream->start = first;
-	cstream->iteraton = first;
+	cstream->iterator = first;
 
 	return cstream;
 }
