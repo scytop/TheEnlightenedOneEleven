@@ -89,7 +89,7 @@ void destroyBeginSpaces(char * input){
 		else
 			break;
 	}
-	memmove(input, input+spacesToMove, strlen(input))
+	memmove(input, input+spacesToMove, strlen(input));
 }
 
 void destroyEndSpaces(char * input){
