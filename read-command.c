@@ -14,7 +14,7 @@
    static function definitions, etc.  */
 
 struct node{
-	node *next;
+	struct node *next;
 	command_t command;
 };
 
@@ -22,7 +22,7 @@ struct node{
    complete the incomplete type declaration in command.h.  */
 
 struct command_stream{
-	node *start;
+	struct node *start;
 };
 
 void destroyBeginSpaces(char * input){
@@ -64,7 +64,7 @@ bool isSimpleCommand(char c)
 
 char ** lexer (int(*get_next_byte) (void *), 
 					void *get_next_byte_argument,
-					int * arraySize)
+					int * arraySize) 
 {
 char c;
 char prev_c = '\0';
@@ -87,7 +87,7 @@ while( c = get_next_byte(get_next_byte_argument) && c != EOF)
 		currentString = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
 		currentPos = 0;
 		maxArrayElem++;
-		prev_c = '\0' //kind of hacky, but ensures the next iteration will
+		prev_c = '\0'; //kind of hacky, but ensures the next iteration will
 									//be an append instead of a string-push
 		}
 		else if(prev_c == '\0' || 
