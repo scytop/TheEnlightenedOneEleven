@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <error.h>
+#include <stack.h>
 
 
 #define DEFAULT_BUFFER_SIZE 50
