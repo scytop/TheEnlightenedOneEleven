@@ -211,7 +211,8 @@ command_stream_t parseShitPls(char **stringArray, int arrSize){
 	curNode = first;
 
 	//go through entire array
-	for(int k=0 ; k < arrSize ; k++){
+	unsigned int k = 0;
+	for(k=0 ; k < arrSize ; k++){
 		int comType = 0;
 		if(strcmp(stringArray[k], "&&") == 0)
 			comType = 1;
@@ -298,7 +299,10 @@ command_stream_t parseShitPls(char **stringArray, int arrSize){
 
 	curNode->command = comStack.pop();
 
-	return first;
+	struct command_stream cstream; 
+	cstream.start = first;
+
+	return &cstream;
 }
 
 command_stream_t
