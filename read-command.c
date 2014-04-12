@@ -174,7 +174,7 @@ command_t makeCommand(char *curString, int type){
 command_t combineCommand(command_t command1, command_t command2, command_t operator){
 	//send in same command twice to indicate subshell operator
 	if(command1 == command2)
-		operator->u.subshell_command = &command1;
+		operator->u.subshell_command = command1;
 	else{
 		operator->u.command[0] = command1;
 		operator->u.command[1] = command2;
