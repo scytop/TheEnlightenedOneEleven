@@ -17,7 +17,7 @@ struct node{
 	struct node *next;
 	command_t command;
 };
-
+int i=0;
 /* FIXME: Define the type 'struct command_stream' here.  This should
    complete the incomplete type declaration in command.h.  */
 
@@ -27,7 +27,7 @@ struct command_stream{
 
 void destroyBeginSpaces(char * input){
 	int spacesToMove = 0;
-	for(int i = 0; i < strlen(input); i++)
+	for(i = 0; i < strlen(input); i++)
 	{
 		if (input[i] == ' ')
 			spacesToMove++;
@@ -38,7 +38,7 @@ void destroyBeginSpaces(char * input){
 }
 
 void destroyEndSpaces(char * input){
-	for(int i = strlen(input)-1; i >= 0; i--)
+	for(i = strlen(input)-1; i >= 0; i--)
 	{
 		if(input[i] == ' ')
 			input[i] = '\0';
@@ -119,8 +119,7 @@ maxArrayElem++;
 currentString = malloc(sizeof(char)*2);
 currentString[0] = '\0';
 stringArray[maxArrayElem] = currentString;
-for(int i = 0; i < maxArrayElem; i++)
-	{
+for(i = 0; i < maxArrayElem; i++)
 	destroyBeginSpaces(stringArray[i]);
 	destroyEndSpaces(stringArray[i]);
 	}
