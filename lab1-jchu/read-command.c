@@ -67,7 +67,7 @@ init_stack (int max)
 
 
 
-struct node{
+typedef struct node node{
 	struct node *next;
 	command_t command;
 };
