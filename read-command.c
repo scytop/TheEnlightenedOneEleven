@@ -67,7 +67,7 @@ init_stack (int max)
 
 
 
-struct node{
+typedef struct node node{
 	struct node *next;
 	command_t command;
 };
@@ -358,7 +358,7 @@ command_stream_t parseShitPls(char **stringArray, unsigned int arrSize){
 
 	struct command_stream *cstream = malloc(sizeof(struct command_stream)); 
 	cstream->start = first;
-	cstream->iteraton = first;
+	cstream->iterator = first;
 
 	return cstream;
 }
