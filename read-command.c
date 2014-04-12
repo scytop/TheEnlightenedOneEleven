@@ -134,7 +134,7 @@ return stringArray;
 
 
 command_t makeCommand(char *curString, int type){
-	command_t result = malloc(sizeof(command));
+	command_t result = malloc(sizeof(struct command));
 
 	//set type of command
 	switch(type){
@@ -198,15 +198,15 @@ command_stream_t parseShitPls(char **stringArray, int arrSize){
 	opStack.commands = malloc(sizeof(command_t)*5);
 	opStack.size = 0;
 	opStack.max_size = 5;
-	stack comStack;
+	struct stack comStack;
 	comStack.commands = malloc(sizeof(command_t)*5);
 	comStack.size = 0;
 	comStack.max_size = 5;
 
 	//make node + pointer to current node
-	node *first = malloc(sizeof(node));
+	struct node *first = malloc(sizeof(struct node));
 	first->next = NULL;
-	node *curNode;
+	struct node *curNode;
 	curNode = first;
 
 	//go through entire array
@@ -250,7 +250,7 @@ command_stream_t parseShitPls(char **stringArray, int arrSize){
 				command_t newCommand = combineCommand(command1, command2, operator);
 				comStack.push(newCommand);
 			}
-			node *newNode = malloc(sizeof(node));
+			struct node *newNode = malloc(sizeof(struct node));
 			newNode->next = NULL;
 			curNode->next = newNode;
 			curNode->command = comStack.pop();
