@@ -315,7 +315,7 @@ make_command_stream (int (*get_next_byte) (void *),
 	char ** commandArray = lexer(*get_next_byte, 
 													get_next_byte_argument,
 													tmpPnt);
-	int arraySize = *tmpPnt;
+	unsigned int arraySize = *tmpPnt;
 	//returns an array of all the commands
 	
 	return parseShitPls(commandArray, arraySize);
