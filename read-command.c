@@ -301,10 +301,10 @@ command_stream_t parseShitPls(char **stringArray, unsigned int arrSize){
 
 	curNode->command = comStack.pop();
 
-	struct command_stream cstream; 
-	cstream.start = first;
+	struct command_stream *cstream = malloc(sizeof(command_stream)); 
+	cstream->start = first;
 
-	return &cstream;
+	return cstream;
 }
 
 command_stream_t
