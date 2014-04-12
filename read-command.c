@@ -29,7 +29,7 @@ void destroyBeginSpaces(char * input){
 	int spacesToMove = 0;
 	for(i = 0; i < strlen(input); i++)
 	{
-		if (input[i] == ' ')
+		if (input[i] == ' ' || input[i] == '\t')
 			spacesToMove++;
 		else
 			break;
@@ -40,7 +40,7 @@ void destroyBeginSpaces(char * input){
 void destroyEndSpaces(char * input){
 	for(i = strlen(input)-1; i > 0; i--)
 	{
-		if(input[i] == ' ')
+		if(input[i] == ' ' || input[i] == '\t')
 			input[i] = '\0';
 		else
 			return;
@@ -57,7 +57,9 @@ bool isOperand(char c)
 }
 bool isSimpleCommand(char c)
 {
-	if(isalnum(c) || c == ' ')
+	if(isalnum(c) || c == ' ' || c == '!' || c == '%'||
+			c == '+' || c == ',' || c == '-' || c == '.' ||
+			c == '/' || c == ':' || c == '@' || c == '^'|| c == '_')
 		return true;
 	return false;
 }
