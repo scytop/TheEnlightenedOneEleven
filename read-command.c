@@ -7,8 +7,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <error.h>
-#include <stack.h>
-
+#include "stack.h"
 
 #define DEFAULT_BUFFER_SIZE 50
 /* FIXME: You may need to add #include directives, macro definitions,
@@ -18,7 +17,7 @@ struct node{
 	struct node *next;
 	command_t command;
 };
-int i=0;
+unsigned int i=0;
 /* FIXME: Define the type 'struct command_stream' here.  This should
    complete the incomplete type declaration in command.h.  */
 
@@ -150,6 +149,7 @@ command_t makeCommand(char *curString, int type){
 			result->type = PIPE_COMMAND;
 			break;
 		case 4:
+		case 5:
 		case 5:
 			result->type = SEQUENCE_COMMAND;
 			break;
@@ -324,4 +324,3 @@ read_command_stream (command_stream_t s)
   /* FIXME: Replace this with your implementation too.  */
   error (1, 0, "command reading not yet implemented");
   return 0;
-}
