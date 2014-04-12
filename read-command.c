@@ -29,7 +29,7 @@ void destroyBeginSpaces(char * input){
 	int spacesToMove = 0;
 	for(i = 0; i < strlen(input); i++)
 	{
-		if (input[i] == ' ')
+		if (input[i] == ' ' || input[i] == '\t')
 			spacesToMove++;
 		else
 			break;
@@ -40,7 +40,7 @@ void destroyBeginSpaces(char * input){
 void destroyEndSpaces(char * input){
 	for(i = strlen(input)-1; i > 0; i--)
 	{
-		if(input[i] == ' ')
+		if(input[i] == ' ' || input[i] == '\t')
 			input[i] = '\0';
 		else
 			return;
@@ -57,14 +57,16 @@ bool isOperand(char c)
 }
 bool isSimpleCommand(char c)
 {
-	if(isalnum(c) || c == ' ')
+	if(isalnum(c) || c == ' ' || c == '!' || c == '%'||
+			c == '+' || c == ',' || c == '-' || c == '.' ||
+			c == '/' || c == ':' || c == '@' || c == '^'|| c == '_')
 		return true;
 	return false;
 }
 
 char ** lexer (int(*get_next_byte) (void *), 
 					void *get_next_byte_argument,
-					int * arraySize) 
+					unsigned int * arraySize) 
 {
 char c;
 char prev_c = '\0';
@@ -193,7 +195,7 @@ int precedence(command_t command){
 		return 3;
 }
 
-command_stream_t parseShitPls(char **stringArray, int arrSize){
+command_stream_t parseShitPls(char **stringArray, unsigned int arrSize){
 	//initialize operator and command stacks
 	struct stack opStack;
 	opStack.commands = malloc(sizeof(command_t)*5);
@@ -309,11 +311,11 @@ command_stream_t
 make_command_stream (int (*get_next_byte) (void *),
 		     void *get_next_byte_argument)
 {
-	int * tmpPnt;
+	unsigned int * tmpPnt;
 	char ** commandArray = lexer(*get_next_byte, 
 													get_next_byte_argument,
 													tmpPnt);
-	int arraySize = *tmpPnt;
+	unsigned int arraySize = *tmpPnt;
 	//returns an array of all the commands
 	
 	return parseShitPls(commandArray, arraySize);

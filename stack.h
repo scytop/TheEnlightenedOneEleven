@@ -47,4 +47,5 @@ init_stack (int max)
   new->size = 0;
   new->max_size = max;
   new->commands = malloc (max * sizeof (command_t));
+	return new;
 }
