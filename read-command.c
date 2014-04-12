@@ -15,20 +15,20 @@
    static function definitions, etc.  */
 
 struct node{
-	node *next;
+	struct node *next;
 	command_t command;
 };
-
+int i=0;
 /* FIXME: Define the type 'struct command_stream' here.  This should
    complete the incomplete type declaration in command.h.  */
 
 struct command_stream{
-	node *start;
+	struct node *start;
 };
 
 void destroyBeginSpaces(char * input){
 	int spacesToMove = 0;
-	for(int i = 0; i < strlen(input); i++)
+	for(i = 0; i < strlen(input); i++)
 	{
 		if (input[i] == ' ')
 			spacesToMove++;
@@ -39,7 +39,7 @@ void destroyBeginSpaces(char * input){
 }
 
 void destroyEndSpaces(char * input){
-	for(int i = strlen(input)-1; i >= 0; i--)
+	for(i = strlen(input)-1; i >= 0; i--)
 	{
 		if(input[i] == ' ')
 			input[i] = '\0';
@@ -65,7 +65,7 @@ bool isSimpleCommand(char c)
 
 char ** lexer (int(*get_next_byte) (void *), 
 					void *get_next_byte_argument,
-					int * arraySize)
+					int * arraySize) 
 {
 char c;
 char prev_c = '\0';
@@ -88,7 +88,7 @@ while( c = get_next_byte(get_next_byte_argument) && c != EOF)
 		currentString = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
 		currentPos = 0;
 		maxArrayElem++;
-		prev_c = '\0' //kind of hacky, but ensures the next iteration will
+		prev_c = '\0'; //kind of hacky, but ensures the next iteration will
 									//be an append instead of a string-push
 		}
 		else if(prev_c == '\0' || 
@@ -120,8 +120,7 @@ maxArrayElem++;
 currentString = malloc(sizeof(char)*2);
 currentString[0] = '\0';
 stringArray[maxArrayElem] = currentString;
-for(int i = 0; i < maxArrayElem; i++)
-	{
+for(i = 0; i < maxArrayElem; i++)
 	destroyBeginSpaces(stringArray[i]);
 	destroyEndSpaces(stringArray[i]);
 	}

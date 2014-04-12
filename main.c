@@ -1,4 +1,4 @@
-// UCLA CS 111 Lab 1 main program
+//UCLA CS 111 Lab 1 main program
 
 #include <errno.h>
 #include <error.h>
@@ -22,6 +22,12 @@ get_next_byte (void *stream)
   return getc (stream);
 }
 
+
+int main(int argc, char **argv)
+{
+
+}
+/*
 int
 main (int argc, char **argv)
 {
@@ -68,4 +74,4 @@ main (int argc, char **argv)
     }
 
   return print_tree || !last_command ? 0 : command_status (last_command);
-}
+}*/
