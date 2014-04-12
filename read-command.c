@@ -66,7 +66,7 @@ bool isSimpleCommand(char c)
 
 char ** lexer (int(*get_next_byte) (void *), 
 					void *get_next_byte_argument,
-					int * arraySize) 
+					unsigned int * arraySize) 
 {
 char c;
 char prev_c = '\0';
@@ -195,7 +195,7 @@ int precedence(command_t command){
 		return 3;
 }
 
-command_stream_t parseShitPls(char **stringArray, int arrSize){
+command_stream_t parseShitPls(char **stringArray, unsigned int arrSize){
 	//initialize operator and command stacks
 	struct stack opStack;
 	opStack.commands = malloc(sizeof(command_t)*5);
@@ -311,7 +311,7 @@ command_stream_t
 make_command_stream (int (*get_next_byte) (void *),
 		     void *get_next_byte_argument)
 {
-	int * tmpPnt;
+	unsigned int * tmpPnt;
 	char ** commandArray = lexer(*get_next_byte, 
 													get_next_byte_argument,
 													tmpPnt);
