@@ -122,6 +122,7 @@ currentString = malloc(sizeof(char)*2);
 currentString[0] = '\0';
 stringArray[maxArrayElem] = currentString;
 for(i = 0; i < maxArrayElem; i++)
+	{
 	destroyBeginSpaces(stringArray[i]);
 	destroyEndSpaces(stringArray[i]);
 	}
