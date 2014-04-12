@@ -306,8 +306,8 @@ make_command_stream (int (*get_next_byte) (void *),
 		     void *get_next_byte_argument)
 {
 	int * tmpPnt;
-	char ** commandArray = lexer((*get_next_byte) (void *), 
-													*get_next_byte_argument,
+	char ** commandArray = lexer(*get_next_byte, 
+													get_next_byte_argument,
 													tmpPnt);
 	int arraySize = *tmpPnt;
 	//returns an array of all the commands
@@ -326,3 +326,4 @@ read_command_stream (command_stream_t s)
   /* FIXME: Replace this with your implementation too.  */
   error (1, 0, "command reading not yet implemented");
   return 0;
+}
