@@ -23,6 +23,7 @@ unsigned int i=0;
 
 struct command_stream{
 	struct node *start;
+	struct node *iterator;
 };
 
 void destroyBeginSpaces(char * input){
@@ -34,7 +35,7 @@ void destroyBeginSpaces(char * input){
 		else
 			break;
 	}
-	memmove(input, input+spacesToMove, strlen(input));
+	memmove(input, input+spacesToMove, strlen(input))
 }
 
 void destroyEndSpaces(char * input){
@@ -303,6 +304,7 @@ command_stream_t parseShitPls(char **stringArray, unsigned int arrSize){
 
 	struct command_stream *cstream = malloc(sizeof(command_stream)); 
 	cstream->start = first;
+	cstream->iteraton = first;
 
 	return cstream;
 }
@@ -330,7 +332,16 @@ make_command_stream (int (*get_next_byte) (void *),
 command_t
 read_command_stream (command_stream_t s)
 {
+	command_t result;
+	if(s->iterator != NULL){
+		result = s->iterator->command;
+		s->iterator = s->iterator->next;
+	}
+	else
+		return NULL;
+	return result;
+
   /* FIXME: Replace this with your implementation too.  */
-  error (1, 0, "command reading not yet implemented");
-  return 0;
+  //error (1, 0, "command reading not yet implemented");
+  //return 0;
 }
