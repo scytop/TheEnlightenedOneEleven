@@ -9,7 +9,7 @@ struct stack
 };
  
 void
-push (stack *self, command_t command)
+push (struct stack *self, command_t command)
 {
   if (self->size == self->max_size) {
     self->max_size *= 2;
@@ -22,7 +22,7 @@ push (stack *self, command_t command)
 }
  
 command_t
-pop (stack *self)
+pop (struct stack *self)
 {
   if (self->size > 0)
     return self->commands[self->size--];
@@ -31,7 +31,7 @@ pop (stack *self)
 }
  
 command_t
-peek (stack *self)
+peek (struct stack *self)
 {
   if (self->size > 0) {
     int i = self->size - 1;
@@ -40,10 +40,10 @@ peek (stack *self)
     return NULL;
 }
  
-stack*
+struct stack*
 init_stack (int max)
 {
-  stack *new = malloc (sizeof (stack));
+  struct stack *new = malloc (sizeof (struct stack));
   new->size = 0;
   new->max_size = max;
   new->commands = malloc (max * sizeof (command_t));
