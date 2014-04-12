@@ -311,7 +311,8 @@ command_stream_t
 make_command_stream (int (*get_next_byte) (void *),
 		     void *get_next_byte_argument)
 {
-	unsigned int * tmpPnt;
+	unsigned int x = 1;
+	unsigned int * tmpPnt = &x;
 	char ** commandArray = lexer(*get_next_byte, 
 													get_next_byte_argument,
 													tmpPnt);
