@@ -4,7 +4,7 @@
 #include "command-internals.h"
 #include <stdio.h>
 #include <string.h>
-#include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <error.h>
 #include "stack.h"
@@ -38,7 +38,7 @@ void destroyBeginSpaces(char * input){
 }
 
 void destroyEndSpaces(char * input){
-	for(i = strlen(input)-1; i >= 0; i--)
+	for(i = strlen(input)-1; i > 0; i--)
 	{
 		if(input[i] == ' ')
 			input[i] = '\0';
@@ -68,21 +68,23 @@ char ** lexer (int(*get_next_byte) (void *),
 {
 char c;
 char prev_c = '\0';
+char not = '\0';
+char* nullpoint = &not;
 
 char * currentString = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
 char ** stringArray = malloc(sizeof(char*) * DEFAULT_BUFFER_SIZE*10);
 int currentPos = 0;
-int maxArrayElem = 0;
+unsigned int maxArrayElem = 0;
 
-while( c = get_next_byte(get_next_byte_argument) && c != EOF)
+while(( c = get_next_byte(get_next_byte_argument)) &&( c != EOF))
 	{
 		//assume that only valid inputs are allowed
 		if (c == '(' || c == ')' || c == ';')
 		{
 		//These are singular operands, always, so this should push
 		//and create a new cstring
-		strcat(currentString, c);
-		strcat(currentString, '\0');
+		strcat(currentString, &c);
+		strcat(currentString, nullpoint);
 		stringArray[maxArrayElem] = currentString;
 		currentString = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
 		currentPos = 0;
@@ -95,25 +97,25 @@ while( c = get_next_byte(get_next_byte_argument) && c != EOF)
 			)
 			{ //if the current string needs to be appended
 				//FIXME: implement what happens if they go over 500 chars
-				strcat(currentString, c);
+				strcat(currentString, &c);
 				currentPos++;
 				prev_c = c;
 
 			}
 		else if(isOperand(c) != isOperand(prev_c))
 		{ //if we need to push the current string to the stringArray
-			strcat(currentString, '\0');
+			strcat(currentString, nullpoint);
 			stringArray[maxArrayElem] = currentString; //pushes c string
 			currentString = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
 				//creates a new c string 
 			currentPos = 0;
-			strcat(currentString, c);
+			strcat(currentString, &c);
 			maxArrayElem++;
 			prev_c = c;
 		}
 	}
 //at EOF, push current string onto the array
-strcat(currentString, '\0');
+strcat(currentString, nullpoint);
 stringArray[maxArrayElem] = currentString;
 maxArrayElem++;
 currentString = malloc(sizeof(char)*2);
@@ -149,7 +151,6 @@ command_t makeCommand(char *curString, int type){
 			result->type = PIPE_COMMAND;
 			break;
 		case 4:
-		case 5:
 		case 5:
 			result->type = SEQUENCE_COMMAND;
 			break;
@@ -193,7 +194,7 @@ int precedence(command_t command){
 
 command_stream_t parseShitPls(char **stringArray, int arrSize){
 	//initialize operator and command stacks
-	stack opStack;
+	struct stack opStack;
 	opStack.commands = malloc(sizeof(command_t)*5);
 	opStack.size = 0;
 	opStack.max_size = 5;
