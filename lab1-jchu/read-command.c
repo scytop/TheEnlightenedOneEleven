@@ -179,10 +179,6 @@ while(( c = get_next_byte(get_next_byte_argument)) &&( c != EOF))
 strcat(currentString, nullpoint);
 stringArray[maxArrayElem] = currentString;
 maxArrayElem++;
-if(currIsCommand)
-{
-error(2,2, "Operator is at the end D:");
-}
 unsigned int i = 0;
 for(i = 0; i < maxArrayElem; i++)
 	{

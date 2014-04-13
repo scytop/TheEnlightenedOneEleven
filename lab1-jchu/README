@@ -1,0 +1,17 @@
+This is a skeleton for CS 111 Lab 1.
+
+Eileen The 104141878
+Jonathan Chu804141479 
+
+
+Our solution uses a linked list to store the seperate
+commands.  Each node could potentially be run in parallel,
+if the node before and after it are not conflicting.  Each
+of the nodes also has a pointer to a command object, which is
+the root command.
+
+The current limitations is that there is some memory reallocation
+that doesn't work correctly, but so long as it doesn't go 
+over 50 bytes it shouldn't be a problem.
+
+It also doesn't build correctly on ubuntu.
