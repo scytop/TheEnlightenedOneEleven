@@ -150,7 +150,7 @@ while(( c = get_next_byte(get_next_byte_argument)) &&( c != EOF))
 									//be an append instead of a string-push
 		}
 		else if(prev_c == '\0' || 
-					(isOperand(c) && isOperand(prev_c))
+					(isOperand(c) == isOperand(prev_c))
 			)
 			{ //if the current string needs to be appended
 				//FIXME: implement what happens if they go over 500 chars
@@ -250,7 +250,7 @@ int precedence(command_t command){
 		return 3;
 }
 
-command_stream_t parseShitPls(char **stringArray, unsigned int arrSize){
+command_stream_t parse(char **stringArray, unsigned int arrSize){
 	//initialize operator and command stacks
 	struct stack opStack;
 	opStack.commands = malloc(sizeof(command_t)*5);
@@ -375,7 +375,7 @@ make_command_stream (int (*get_next_byte) (void *),
 	unsigned int arraySize = *tmpPnt;
 	//returns an array of all the commands
 	
-	return parseShitPls(commandArray, arraySize);
+	return parse(commandArray, arraySize);
   /* FIXME: Replace this with your implementation.  You may need to
      add auxiliary functions and otherwise modify the source code.
      You can also use external functions defined in the GNU C Library.  */
