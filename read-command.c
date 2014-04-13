@@ -105,7 +105,7 @@ void destroyEndSpaces(char * input){
 bool isOperand(char c)
 {
 	if(c=='|' || c== '&' || c == ';' || c== '(' 
-		|| c == ')')
+		|| c == ')' || c == '<' || c == '>')
 		return true;
 	else
 		return false;
@@ -132,9 +132,14 @@ char * currentString = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
 char ** stringArray = malloc(sizeof(char*) * DEFAULT_BUFFER_SIZE*10);
 int currentPos = 0;
 unsigned int maxArrayElem = 0;
+bool prevIsCommand = false;
+bool currIsCommand =false;
+
 
 while(( c = get_next_byte(get_next_byte_argument)) &&( c != EOF))
 	{
+		prevIsCommand = isOperand(prev_c);
+		currIsCommand = isOperand(c);
 		//assume that only valid inputs are allowed
 		if (c == '(' || c == ')' || c == ';')
 		{
@@ -149,9 +154,8 @@ while(( c = get_next_byte(get_next_byte_argument)) &&( c != EOF))
 		prev_c = '\0'; //kind of hacky, but ensures the next iteration will
 									//be an append instead of a string-push
 		}
-		else if(prev_c == '\0' || 
-					(isOperand(c) == isOperand(prev_c))
-			)
+		else if((prev_c == '\0') ||
+						 (prevIsCommand==currIsCommand))
 			{ //if the current string needs to be appended
 				//FIXME: implement what happens if they go over 500 chars
 				strcat(currentString, &c);
@@ -178,6 +182,7 @@ maxArrayElem++;
 currentString = malloc(sizeof(char)*2);
 currentString[0] = '\0';
 stringArray[maxArrayElem] = currentString;
+unsigned int i = 0;
 for(i = 0; i < maxArrayElem; i++)
 	{
 	destroyBeginSpaces(stringArray[i]);
@@ -192,7 +197,7 @@ return stringArray;
 
 
 command_t makeCommand(char *curString, int type){
-	command_t result = malloc(sizeof(struct command));
+	command_t result = malloc(sizeof(struct command*));
 
 	//set type of command
 	switch(type){
@@ -286,75 +291,75 @@ command_stream_t parse(char **stringArray, unsigned int arrSize){
 
 		//all the stack popping stuff that comes with close paren
 		if(strcmp(stringArray[k], ")") == 0){
-			command_t topOp = opStack.pop();
+			command_t topOp = pop(&opStack);
 			while(topOp->type != SUBSHELL_COMMAND){
-				command_t command2 = comStack.pop();
-				command_t command1 = comStack.pop();
+				command_t command2 = pop(&comStack);
+				command_t command1 = pop(&comStack);
 				command_t newCommand = combineCommand(command1, command2, topOp);
-				comStack.push(newCommand);
-				topOp = opStack.pop();
+				push(&comStack, newCommand);
+				topOp = pop(&opStack);
 			}
-			command_t command1 = comStack.pop();
+			command_t command1 = pop(&comStack);
 			command_t newCommand = combineCommand(command1, command1, topOp);
-			comStack.push(newCommand);
+			push(&comStack, newCommand);
 			continue;
 		}
 
 		//we have at least two newlines, make new node
 		if(stringArray[k][0] == '\n' && stringArray[k][1] == '\n'){
 			while(opStack.peek() != NULL){
-				command_t operator = opStack.pop();
-				command_t command2 = comStack.pop();
-				command_t command1 = comStack.pop();
+				command_t operator = pop(&opStack);
+				command_t command2 = pop(&comStack);
+				command_t command1 = pop(&comStack);
 				command_t newCommand = combineCommand(command1, command2, operator);
-				comStack.push(newCommand);
+				push(&comStack, newCommand);
 			}
 			struct node *newNode = malloc(sizeof(struct node));
 			newNode->next = NULL;
 			curNode->next = newNode;
-			curNode->command = comStack.pop();
+			curNode->command = pop(&comStack);
 			curNode = newNode;
 			continue;
 		}
 
 		command_t curCommand = makeCommand(stringArray[k], comType);
 		if(curCommand->type == SIMPLE_COMMAND) //not an operator
-			comStack.push(curCommand);
+			push(&comStack, curCommand);
 		else if(curCommand->type == SUBSHELL_COMMAND) //encounter open paren
-			opStack.push(curCommand);
+			push(&opStack, curCommand);
 		else{
-			if(opStack.peek() == NULL)
-				opStack.push(curCommand);
+			if(peek(&opStack) == NULL)
+				push(&opStack, curCommand);
 			else{
-				if(precedence(curCommand) > precedence(opStack.peek()))
-					opStack.push(curCommand);
+				if(precedence(curCommand) > precedence(peek(&opStack)))
+					push(&opStack, curCommand);
 				else{
 					command_t operator = NULL;
-					while(operator->type != SUBSHELL_COMMAND && precedence(operator) <= precedence(opStack.peek())){
-						operator = opStack.pop();
-						command_t command2 = comStack.pop();
-						command_t command1 = comStack.pop();
+					while((operator->type != SUBSHELL_COMMAND) && (precedence(operator) <= precedence(peek(&opStack)))){
+						operator = pop(&opStack);
+						command_t command2 = pop(&comStack);
+						command_t command1 = pop(&comStack);
 						command_t newCommand = combineCommand(command1, command2, operator);
-						comStack.push(newCommand);
-						if(opStack.peek() == NULL)
+						push(&comStack, newCommand);
+						if(peek(&opStack) == NULL)
 							break;
 					}
-					opStack.push(curCommand);
+					push(&opStack, curCommand);
 				}
 			}
 		}
 	}
 	//pop off everything left at the end, should not have any parens/newlines on the stack by now
 	//[if there is I fucked up]
-	while(opStack.peek() != NULL){
-		command_t operator = opStack.pop();
-		command_t command2 = comStack.pop();
-		command_t command1 = comStack.pop();
+	while(peek(&opStack) != NULL){
+		command_t operator = pop(&opStack);
+		command_t command2 = pop(&comStack);
+		command_t command1 = pop(&comStack);
 		command_t newCommand = combineCommand(command1, command2, operator);
-		comStack.push(newCommand);
+		push(&comStack, newCommand);
 	}
 
-	curNode->command = comStack.pop();
+	curNode->command = pop(&comStack);
 
 	struct command_stream *cstream = malloc(sizeof(struct command_stream)); 
 	cstream->start = first;
