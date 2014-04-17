@@ -8,7 +8,7 @@
 #include <ctype.h>
 #include <error.h>
 
-#define DEFAULT_BUFFER_SIZE 50
+#define DEFAULT_BUFFER_SIZE 100
 /* FIXME: You may need to add #include directives, macro definitions,
    static function definitions, etc.  */
 
@@ -198,7 +198,7 @@ return stringArray;
 
 
 command_t makeCommand(char *curString, int type){
-	command_t result = malloc(sizeof(struct command*));
+	command_t result = malloc(sizeof(struct command));
 
 	//set type of command
 	switch(type){
@@ -225,9 +225,22 @@ command_t makeCommand(char *curString, int type){
 
 	//set pointer to command if simple command
 	if(type == 0){
-		char *comString = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
-		strcat(comString, curString);
-		result->u.word = &comString;
+	/*	char** comString = malloc(sizeof(char*)*DEFAULT_BUFFER_SIZE);
+		*comString = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+		strcpy(comString[0], curString);
+		//strcpy(*(result->u.word), comString);
+		(result->u.word) = comString;
+	*/
+		char** comString = malloc(sizeof(char*));
+		char* temp = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+		//temp = realloc(temp, sizeof(char)*DEFAULT_BUFFER_SIZE);
+		//comString = realloc(comString, sizeof(char*));
+		
+		strcpy(temp, curString);
+		*comString = temp;
+		result->u.word = comString;
+//		free(comString);
+
 	}
 
 	return result;
@@ -254,16 +267,20 @@ int precedence(command_t command){
 		return 1;
 	else //either AND or OR command
 		return 3;
+
+
+
+//completely messed up, I think
 }
 
 command_stream_t parse(char **stringArray, unsigned int arrSize){
 	//initialize operator and command stacks
 	struct stack opStack;
-	opStack.commands = malloc(sizeof(command_t)*5);
+	opStack.commands = malloc(sizeof(command_t)*25);
 	opStack.size = 0;
 	opStack.max_size = 25;
 	struct stack comStack;
-	comStack.commands = malloc(sizeof(command_t)*5);
+	comStack.commands = malloc(sizeof(command_t)*25);
 	comStack.size = 0;
 	comStack.max_size = 25;
 
@@ -299,7 +316,7 @@ command_stream_t parse(char **stringArray, unsigned int arrSize){
 				command_t newCommand = combineCommand(command1, command2, topOp);
 				push(&comStack, newCommand);
 				topOp = pop(&opStack);
-			}
+			}//TODO: what happens if there's double paren, e.g. ))
 			command_t command1 = pop(&comStack);
 			command_t newCommand = combineCommand(command1, command1, topOp);
 			push(&comStack, newCommand);
@@ -323,7 +340,8 @@ command_stream_t parse(char **stringArray, unsigned int arrSize){
 			continue;
 		}
 
-		command_t curCommand = makeCommand(stringArray[k], comType);
+		command_t curCommand = malloc(sizeof(struct command));
+		curCommand = makeCommand(stringArray[k], comType);
 		if(curCommand->type == SIMPLE_COMMAND) //not an operator
 			push(&comStack, curCommand);
 		else if(curCommand->type == SUBSHELL_COMMAND) //encounter open paren
@@ -367,8 +385,8 @@ command_stream_t parse(char **stringArray, unsigned int arrSize){
 		push(&comStack, newCommand);
 	}
 
-	curNode->command = pop(&comStack);
-
+	curNode->command = peek(&comStack);
+	pop(&comStack); //dont ask, it works
 	struct command_stream *cstream = malloc(sizeof(struct command_stream)); 
 	cstream->start = first;
 	cstream->iterator = first;
