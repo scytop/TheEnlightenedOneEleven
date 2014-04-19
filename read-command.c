@@ -109,6 +109,15 @@ bool isOperand(char c)
 	else
 		return false;
 }
+
+
+bool swag(char c)
+{
+if(isOperand(c) || c== '<' || c == '>')
+	return true;
+else
+	return false;
+}
 bool isSimpleCommand(char c)
 {
 	if(isalnum(c) || c == ' ' || c == '!' || c == '%'||
@@ -204,7 +213,23 @@ for(i = 0; i < maxArrayElem; i++)
 return stringArray;
 
 }
-
+void checkDontShrek(char** array, int arraySize){
+	//run after lex-luthering
+	unsigned int i = 0;
+	unsigned int j = 0;
+	char c = '\0';
+	for(i = 0; i < arraySize; i++)
+	{
+		for(j = 0; j < strlen(array[i]); j++)
+			{
+			c = array[i][j];
+			if(swag(c) || isSimpleCommand(c))
+				continue;
+			else
+				error(2,2, "A non-thing is here!");		
+			}
+	}
+}
 
 
 command_t makeCommand(char *curString, int type){
@@ -430,7 +455,7 @@ make_command_stream (int (*get_next_byte) (void *),
 													tmpPnt);
 	unsigned int arraySize = *tmpPnt;
 	//returns an array of all the commands
-	
+	checkDontShrek(commandArray, arraySize);
 	return parse(commandArray, arraySize);
   /* FIXME: Replace this with your implementation.  You may need to
      add auxiliary functions and otherwise modify the source code.
