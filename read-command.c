@@ -104,7 +104,7 @@ void destroyEndSpaces(char * input){
 bool isOperand(char c)
 {
 	if(c=='|' || c== '&' || c == ';' || c== '(' 
-		|| c == ')'/* || c == '<' || c == '>'*/)
+		|| c == ')' || c== '\n'  /* || c == '<' || c == '>'*/)
 		return true;
 	else
 		return false;
@@ -195,11 +195,11 @@ if(prev_c == '\n')
 	{currentString[currentPos-1] = '\0';}
 if(openCount != closeCount)
 	error(2,2, "Open Paren Count doesn't match Close Paren Count");
-
+if(prev_c != '\n'){
 strcat(currentString, nullpoint);
 stringArray[maxArrayElem] = currentString;
-maxArrayElem++;
-if(currIsCommand)
+maxArrayElem++;}
+if(currIsCommand && prev_c != '\n')
 {
 error(2,2, "Operator is at the end D:");
 }
@@ -228,7 +228,7 @@ void checkDontShrek(char** array, int arraySize){
 				error(2,2,"2fast2furious");
 			else if ((c == prev_c) && (c==';'))
 				error(2,2,"prev_c");
-			else if(swag(c) || isSimpleCommand(c))
+			else if((swag(c) || isSimpleCommand(c)) )
 				{prev_c = c; continue;}
 			else
 				error(2,2, "A non-thing is here!");		
