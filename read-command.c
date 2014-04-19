@@ -66,7 +66,6 @@ init_stack (int max)
 }
 
 
-
 struct node{
 	struct node *next;
 	command_t command;
@@ -134,7 +133,8 @@ int currentPos = 0;
 unsigned int maxArrayElem = 0;
 bool prevIsCommand = false;
 bool currIsCommand =false;
-
+int openCount = 0;
+int closeCount = 0;
 
 while(( c = get_next_byte(get_next_byte_argument)) &&( c != EOF))
 	{
@@ -145,6 +145,12 @@ while(( c = get_next_byte(get_next_byte_argument)) &&( c != EOF))
 		{
 		//These are singular operands, always, so this should push
 		//and create a new cstring
+		if (c == '(')
+			openCount++;
+		if (c == ')')
+			closeCount++;	
+		
+
 		strcat(currentString, &c);
 		strcat(currentString, nullpoint);
 		stringArray[maxArrayElem] = currentString;
@@ -176,6 +182,11 @@ while(( c = get_next_byte(get_next_byte_argument)) &&( c != EOF))
 		}
 	}
 //at EOF, push current string onto the array
+if(prev_c == '\n')
+	{currentString[currentPos-1] = '\0';}
+if(openCount != closeCount)
+	error(2,2, "Open Paren Count doesn't match Close Paren Count");
+
 strcat(currentString, nullpoint);
 stringArray[maxArrayElem] = currentString;
 maxArrayElem++;
@@ -189,7 +200,6 @@ for(i = 0; i < maxArrayElem; i++)
 	destroyBeginSpaces(stringArray[i]);
 	destroyEndSpaces(stringArray[i]);
 	}
-
 *arraySize = maxArrayElem;
 return stringArray;
 
@@ -260,14 +270,17 @@ command_t combineCommand(command_t command1, command_t command2, command_t opera
 
 int precedence(command_t command){
 	if(command->type == SEQUENCE_COMMAND)
-		return 0;
-	else if(command->type == PIPE_COMMAND)
-		return 2;
-	else if(command->type == SUBSHELL_COMMAND)
-		return 1;
-	else //either AND or OR command
+//		return 0;
 		return 3;
-
+	else if(command->type == PIPE_COMMAND)
+		return 1;
+//		return 2;
+	else if(command->type == SUBSHELL_COMMAND)
+		return 2;
+//		return 1;
+	else //either AND or OR command
+//		return 3;
+		return 0;
 
 
 //completely messed up, I think
@@ -309,15 +322,20 @@ command_stream_t parse(char **stringArray, unsigned int arrSize){
 
 		//all the stack popping stuff that comes with close paren
 		if(strcmp(stringArray[k], ")") == 0){
-			command_t topOp = pop(&opStack);
+			command_t topOp = peek(&opStack);
+				pop(&opStack);
 			while(topOp->type != SUBSHELL_COMMAND){
-				command_t command2 = pop(&comStack);
-				command_t command1 = pop(&comStack);
+				command_t command2 = peek(&comStack);
+				pop(&comStack);
+				command_t command1 = peek(&comStack);
+				pop(&comStack);
 				command_t newCommand = combineCommand(command1, command2, topOp);
 				push(&comStack, newCommand);
-				topOp = pop(&opStack);
+				topOp = peek(&opStack);
+					pop(&opStack);
 			}//TODO: what happens if there's double paren, e.g. ))
-			command_t command1 = pop(&comStack);
+			command_t command1 = peek(&comStack);
+				pop(&comStack);
 			command_t newCommand = combineCommand(command1, command1, topOp);
 			push(&comStack, newCommand);
 			continue;
@@ -326,16 +344,20 @@ command_stream_t parse(char **stringArray, unsigned int arrSize){
 		//we have at least two newlines, make new node
 		if(stringArray[k][0] == '\n' && stringArray[k][1] == '\n'){
 			while(opStack.peek() != NULL){
-				command_t operator = pop(&opStack);
-				command_t command2 = pop(&comStack);
-				command_t command1 = pop(&comStack);
+				command_t operator = peek(&opStack);
+				pop(&opStack);
+				command_t command2 = peek(&opStack);
+				pop(&comStack);
+				command_t command1 = peek(&opStack);
+				pop(&comStack);
 				command_t newCommand = combineCommand(command1, command2, operator);
 				push(&comStack, newCommand);
 			}
 			struct node *newNode = malloc(sizeof(struct node));
 			newNode->next = NULL;
 			curNode->next = newNode;
-			curNode->command = pop(&comStack);
+			curNode->command = peek(&comStack);
+			pop(&comStack);
 			curNode = newNode;
 			continue;
 		}
@@ -350,7 +372,7 @@ command_stream_t parse(char **stringArray, unsigned int arrSize){
 			if(peek(&opStack) == NULL)
 				push(&opStack, curCommand);
 			else{
-				if(precedence(curCommand) > precedence(peek(&opStack)))
+				if(precedence(curCommand) >= precedence(peek(&opStack)))
 					push(&opStack, curCommand);
 				else{
 					command_t operator = peek(&opStack);
@@ -358,10 +380,13 @@ command_stream_t parse(char **stringArray, unsigned int arrSize){
 				//	enum command_type comp2 = SUBSHELL_COMMAND;
 				//	bool con1 = (comp1 == comp2);
 				//	bool con2 = (precedence(operator) <= precedence(peek(&opStack))); //debugging
-					while((precedence(operator) <= precedence(peek(&opStack)) && (operator->type ==SUBSHELL_COMMAND))){
-						operator = pop(&opStack);
-						command_t command2 = pop(&comStack);
-						command_t command1 = pop(&comStack);
+					while((precedence(operator) <= precedence(peek(&opStack)) && (operator->type !=SUBSHELL_COMMAND))){
+						operator = peek(&opStack);
+						pop(&opStack);
+						command_t command2 = peek(&comStack);
+						pop(&comStack);
+						command_t command1 = peek(&comStack);
+						pop(&comStack);
 						command_t newCommand = combineCommand(command1, command2, operator);
 						push(&comStack, newCommand);
 						if(peek(&opStack) == NULL)
