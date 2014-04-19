@@ -218,16 +218,28 @@ void checkDontShrek(char** array, int arraySize){
 	unsigned int i = 0;
 	unsigned int j = 0;
 	char c = '\0';
+	char prev_c = '\0';
 	for(i = 0; i < arraySize; i++)
 	{
 		for(j = 0; j < strlen(array[i]); j++)
 			{
 			c = array[i][j];
-			if(swag(c) || isSimpleCommand(c))
-				continue;
+			if((c == prev_c) && (c== '<' || c == '>'))
+				error(2,2,"2fast2furious");
+			else if ((c == prev_c) && (c==';'))
+				error(2,2,"prev_c");
+			else if(swag(c) || isSimpleCommand(c))
+				{prev_c = c; continue;}
 			else
 				error(2,2, "A non-thing is here!");		
 			}
+	if(isOperand(array[i][0]) && (strlen(array[i]) >=3))
+		error(2,2,"2 many operands");
+	if(array[i][0] == '<' || array[i][0] == '>' || 
+		array[i][strlen(array[i])-1] == '>' ||
+		array[i][strlen(array[i])-1] == '<')
+		error(2,2, "ksjgdlg");
+
 	}
 }
 
