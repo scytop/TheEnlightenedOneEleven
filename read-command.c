@@ -113,7 +113,7 @@ bool isOperand(char c)
 
 bool swag(char c)
 {
-if(isOperand(c) || c== '<' || c == '>')
+if(isOperand(c) || c== '<' || c == '>' || isSimpleCommand(c))
 	return true;
 else
 	return false;
@@ -191,14 +191,13 @@ while(( c = get_next_byte(get_next_byte_argument)) &&( c != EOF))
 		}
 	}
 //at EOF, push current string onto the array
-if(prev_c == '\n')
-	{currentString[currentPos-1] = '\0';}
+//if(prev_c == '\n')
+//	{currentString[currentPos] = '\0';}
 if(openCount != closeCount)
 	error(2,2, "Open Paren Count doesn't match Close Paren Count");
-if(prev_c != '\n'){
 strcat(currentString, nullpoint);
 stringArray[maxArrayElem] = currentString;
-maxArrayElem++;}
+maxArrayElem++;
 if(currIsCommand && prev_c != '\n')
 {
 error(2,2, "Operator is at the end D:");
@@ -213,33 +212,36 @@ for(i = 0; i < maxArrayElem; i++)
 return stringArray;
 
 }
-void checkDontShrek(char** array, int arraySize){
+void checkDontShrek(char** array, int *arraySize){
 	//run after lex-luthering
 	unsigned int i = 0;
 	unsigned int j = 0;
 	char c = '\0';
 	char prev_c = '\0';
-	for(i = 0; i < arraySize; i++)
+	for(i = 0; i < *arraySize; i++) //for each token
 	{
 		for(j = 0; j < strlen(array[i]); j++)
 			{
 			c = array[i][j];
+			//checks if "<<" or ">>" occurs
 			if((c == prev_c) && (c== '<' || c == '>'))
 				error(2,2,"2fast2furious");
 			else if ((c == prev_c) && (c==';'))
-				error(2,2,"prev_c");
+				error(2,2,"prev_c"); //makes sure ";;" occurs
 			else if((swag(c) || isSimpleCommand(c)) )
-				{prev_c = c; continue;}
-			else
+				{prev_c = c; continue;} //normal case
+			else //c isn't an "acceptable char", as seen in swag(c)
 				error(2,2, "A non-thing is here!");		
 			}
-	if(isOperand(array[i][0]) && (strlen(array[i]) >=3))
-		error(2,2,"2 many operands");
-	if(array[i][0] == '<' || array[i][0] == '>' || 
+	if(isOperand(array[i][0]) && (strlen(array[i]) >=3)) 
+		error(2,2,"2 many operands"); //3 operands in a row
+	if(array[i][0] == '<' || array[i][0] == '>' || //carrot at beginning or end
 		array[i][strlen(array[i])-1] == '>' ||
 		array[i][strlen(array[i])-1] == '<')
 		error(2,2, "ksjgdlg");
-
+	if(i == strlen(array[i])-1 && isOperand(array[i][strlen(array[i])-1]) 
+			&& (array[i][strlen(array[i])-1]) != '\n')
+		{*arraySize--; error(3,3,"yoloswag");} //last (node) is a \n
 	}
 }
 
@@ -467,7 +469,7 @@ make_command_stream (int (*get_next_byte) (void *),
 													tmpPnt);
 	unsigned int arraySize = *tmpPnt;
 	//returns an array of all the commands
-	checkDontShrek(commandArray, arraySize);
+	checkDontShrek(commandArray, &arraySize);
 	return parse(commandArray, arraySize);
   /* FIXME: Replace this with your implementation.  You may need to
      add auxiliary functions and otherwise modify the source code.
