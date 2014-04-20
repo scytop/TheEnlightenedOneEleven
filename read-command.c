@@ -8,7 +8,7 @@
 #include <ctype.h>
 #include <error.h>
 
-#define DEFAULT_BUFFER_SIZE 100
+#define DEFAULT_BUFFER_SIZE 300
 /* FIXME: You may need to add #include directives, macro definitions,
    static function definitions, etc.  */
 
@@ -144,9 +144,14 @@ bool prevIsCommand = false;
 bool currIsCommand =false;
 int openCount = 0;
 int closeCount = 0;
+bool isComment = false;
+
 
 while(( c = get_next_byte(get_next_byte_argument)) &&( c != EOF))
 	{
+	if(c == '#'){isComment = true;continue;}
+	if(c != '\n' && isComment) {continue;}
+	if(isComment && c== '\n'){isComment = false;}
 		prevIsCommand = isOperand(prev_c);
 		currIsCommand = isOperand(c);
 		//assume that only valid inputs are allowed
@@ -241,7 +246,8 @@ void checkDontShrek(char** array, unsigned int *arraySize){
 			else //c isn't an "acceptable char", as seen in swag(c)
 				error(c,c, "A non-thing is here!");		
 			}
-	if(isOperand(array[i][0]) && (strlen(array[i]) >=3)) 
+	if(isOperand(array[i][0]) && (strlen(array[i]) >=3)&&
+		array[i][0] != '\n') 
 		error(7,7,"2 many operands"); //3 operands in a row
 	if(array[i][0] == '<' || array[i][0] == '>' || //carrot at beginning or end
 		array[i][strlen(array[i])-1] == '>' ||
@@ -252,6 +258,8 @@ void checkDontShrek(char** array, unsigned int *arraySize){
 	if(i > 0 && (array[i][0] == '|' || array[i][0] == '&') &&
 		array[i-1][0] == '\n')
 		error(10,10, "Shrek is love");
+	if(i == (*arraySize)-1 && array[i][0] == '\n')
+		(*arraySize)--;
 //	if(i == strlen(array[i])-1 && isOperand(array[i][strlen(array[i])-1]) 
 //			&& (array[i][strlen(array[i])-1]) != '\n')
 //		{*arraySize--; error(3,3,"yoloswag");} //last (node) is a \n
