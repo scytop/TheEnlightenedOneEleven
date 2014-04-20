@@ -169,7 +169,9 @@ while(( c = get_next_byte(get_next_byte_argument)) &&( c != EOF))
 		prev_c = '\0'; //kind of hacky, but ensures the next iteration will
 									//be an append instead of a string-push
 		}
-		else if((isOperand(c) != isOperand(prev_c)) || (c != '\n' && prev_c == '\n'))
+		else if(((isOperand(c) != isOperand(prev_c)) ||
+			 (c != '\n' && prev_c == '\n')) ||
+			((prev_c == '|' || prev_c == '&') && c == '\n')	)
 		{ //if we need to push the current string to the stringArray
 			destroyBeginSpaces(currentString);
 			strcat(currentString, nullpoint);
@@ -237,7 +239,7 @@ void checkDontShrek(char** array, unsigned int *arraySize){
 			else if((swag(c) || isSimpleCommand(c)) )
 				{prev_c = c; continue;} //normal case
 			else //c isn't an "acceptable char", as seen in swag(c)
-				error(6,6, "A non-thing is here!");		
+				error(c,c, "A non-thing is here!");		
 			}
 	if(isOperand(array[i][0]) && (strlen(array[i]) >=3)) 
 		error(7,7,"2 many operands"); //3 operands in a row
@@ -245,7 +247,7 @@ void checkDontShrek(char** array, unsigned int *arraySize){
 		array[i][strlen(array[i])-1] == '>' ||
 		array[i][strlen(array[i])-1] == '<')
 		error(8,8, "ksjgdlg");
-	if(i == strlen(array[i])-1 && isOperand(array[i][0]))
+	if(i == (*arraySize)-1 && isOperand(array[i][0]) && array[i][0] != '\n')
 		error(9,9,"ERROR UP ");
 	if(i > 0 && (array[i][0] == '|' || array[i][0] == '&') &&
 		array[i-1][0] == '\n')
@@ -393,12 +395,12 @@ command_stream_t parse(char **stringArray, unsigned int arrSize){
 
 		//we have at least two newlines, make new node
 		if(stringArray[k][0] == '\n' && stringArray[k][1] == '\n'){
-			while(opStack.peek() != NULL){
+			while(peek(&opStack) != NULL){
 				command_t operator = peek(&opStack);
 				pop(&opStack);
-				command_t command2 = peek(&opStack);
+				command_t command2 = peek(&comStack);
 				pop(&comStack);
-				command_t command1 = peek(&opStack);
+				command_t command1 = peek(&comStack);
 				pop(&comStack);
 				command_t newCommand = combineCommand(command1, command2, operator);
 				push(&comStack, newCommand);
