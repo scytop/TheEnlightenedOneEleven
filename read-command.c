@@ -392,8 +392,11 @@ command_stream_t parse(char **stringArray, unsigned int arrSize){
 			push(&comStack, newCommand);
 			continue;
 		}
-
+		
 		//we have at least two newlines, make new node
+		if(k > 0 && stringArray[k][0] == '\n'  &&
+			(stringArray[k-1][0] == '|' || stringArray[k-1][0] == '&'))
+			continue;
 		if(stringArray[k][0] == '\n' && stringArray[k][1] == '\n'){
 			while(peek(&opStack) != NULL){
 				command_t operator = peek(&opStack);
