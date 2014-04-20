@@ -110,20 +110,20 @@ bool isOperand(char c)
 		return false;
 }
 
-
-bool swag(char c)
-{
-if(isOperand(c) || c== '<' || c == '>' || isSimpleCommand(c))
-	return true;
-else
-	return false;
-}
 bool isSimpleCommand(char c)
 {
 	if(isalnum(c) || c == ' ' || c == '!' || c == '%'||
 			c == '+' || c == ',' || c == '-' || c == '.' ||
 			c == '/' || c == ':' || c == '@' || c == '^'|| c == '_')
 		return true;
+	return false;
+}
+
+bool swag(char c)
+{
+if(isOperand(c) || c== '<' || c == '>' || isSimpleCommand(c))
+	return true;
+else
 	return false;
 }
 
@@ -169,6 +169,19 @@ while(( c = get_next_byte(get_next_byte_argument)) &&( c != EOF))
 		prev_c = '\0'; //kind of hacky, but ensures the next iteration will
 									//be an append instead of a string-push
 		}
+		else if((isOperand(c) != isOperand(prev_c)) || (c != '\n' && prev_c == '\n'))
+		{ //if we need to push the current string to the stringArray
+			destroyBeginSpaces(currentString);
+			strcat(currentString, nullpoint);
+			if(*currentString != '\0'){
+			stringArray[maxArrayElem] = currentString; //pushes c string
+			currentString = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+				//creates a new c string 
+			currentPos = 0;
+			maxArrayElem++;}
+			strcat(currentString, &c);
+			prev_c = c;
+		}
 		else if((prev_c == '\0') ||
 						 (prevIsCommand==currIsCommand))
 			{ //if the current string needs to be appended
@@ -178,29 +191,21 @@ while(( c = get_next_byte(get_next_byte_argument)) &&( c != EOF))
 				prev_c = c;
 
 			}
-		else if(isOperand(c) != isOperand(prev_c))
-		{ //if we need to push the current string to the stringArray
-			strcat(currentString, nullpoint);
-			stringArray[maxArrayElem] = currentString; //pushes c string
-			currentString = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
-				//creates a new c string 
-			currentPos = 0;
-			strcat(currentString, &c);
-			maxArrayElem++;
-			prev_c = c;
-		}
 	}
 //at EOF, push current string onto the array
-//if(prev_c == '\n')
-//	{currentString[currentPos] = '\0';}
+if(prev_c == '\n')
+	{currentString[currentPos] = '\0';}
 if(openCount != closeCount)
 	error(2,2, "Open Paren Count doesn't match Close Paren Count");
+if(currentString[0] !=  '\0')
+{
 strcat(currentString, nullpoint);
 stringArray[maxArrayElem] = currentString;
 maxArrayElem++;
+}
 if(currIsCommand && prev_c != '\n')
 {
-error(2,2, "Operator is at the end D:");
+error(3,3, "Operator is at the end D:");
 }
 unsigned int i = 0;
 for(i = 0; i < maxArrayElem; i++)
@@ -211,8 +216,9 @@ for(i = 0; i < maxArrayElem; i++)
 *arraySize = maxArrayElem;
 return stringArray;
 
+
 }
-void checkDontShrek(char** array, int *arraySize){
+void checkDontShrek(char** array, unsigned int *arraySize){
 	//run after lex-luthering
 	unsigned int i = 0;
 	unsigned int j = 0;
@@ -225,23 +231,28 @@ void checkDontShrek(char** array, int *arraySize){
 			c = array[i][j];
 			//checks if "<<" or ">>" occurs
 			if((c == prev_c) && (c== '<' || c == '>'))
-				error(2,2,"2fast2furious");
+				error(4,4,"2fast2furious");
 			else if ((c == prev_c) && (c==';'))
-				error(2,2,"prev_c"); //makes sure ";;" occurs
+				error(5,5,"prev_c"); //makes sure ";;" occurs
 			else if((swag(c) || isSimpleCommand(c)) )
 				{prev_c = c; continue;} //normal case
 			else //c isn't an "acceptable char", as seen in swag(c)
-				error(2,2, "A non-thing is here!");		
+				error(6,6, "A non-thing is here!");		
 			}
 	if(isOperand(array[i][0]) && (strlen(array[i]) >=3)) 
-		error(2,2,"2 many operands"); //3 operands in a row
+		error(7,7,"2 many operands"); //3 operands in a row
 	if(array[i][0] == '<' || array[i][0] == '>' || //carrot at beginning or end
 		array[i][strlen(array[i])-1] == '>' ||
 		array[i][strlen(array[i])-1] == '<')
-		error(2,2, "ksjgdlg");
-	if(i == strlen(array[i])-1 && isOperand(array[i][strlen(array[i])-1]) 
-			&& (array[i][strlen(array[i])-1]) != '\n')
-		{*arraySize--; error(3,3,"yoloswag");} //last (node) is a \n
+		error(8,8, "ksjgdlg");
+	if(i == strlen(array[i])-1 && isOperand(array[i][0]))
+		error(9,9,"ERROR UP ");
+	if(i > 0 && (array[i][0] == '|' || array[i][0] == '&') &&
+		array[i-1][0] == '\n')
+		error(10,10, "Shrek is love");
+//	if(i == strlen(array[i])-1 && isOperand(array[i][strlen(array[i])-1]) 
+//			&& (array[i][strlen(array[i])-1]) != '\n')
+//		{*arraySize--; error(3,3,"yoloswag");} //last (node) is a \n
 	}
 }
 
@@ -465,8 +476,8 @@ make_command_stream (int (*get_next_byte) (void *),
 	unsigned int x = -1;
 	unsigned int * tmpPnt = &x;
 	char ** commandArray = lexer(*get_next_byte, 
-													get_next_byte_argument,
-													tmpPnt);
+				get_next_byte_argument,
+				tmpPnt);
 	unsigned int arraySize = *tmpPnt;
 	//returns an array of all the commands
 	checkDontShrek(commandArray, &arraySize);
