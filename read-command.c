@@ -284,6 +284,55 @@ void checkDontShrek(char** array, unsigned int *arraySize){
 	}
 }
 
+command_t makeSimpleCommand(command_t result, char* curString){
+	/*	char** comString = malloc(sizeof(char*)*DEFAULT_BUFFER_SIZE);
+		*comString = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+		strcpy(comString[0], curString);
+		//strcpy(*(result->u.word), comString);
+		(result->u.word) = comString;
+	*/
+		char** comString = malloc(sizeof(char*));
+		char* temp = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+		//temp = realloc(temp, sizeof(char)*DEFAULT_BUFFER_SIZE);
+		//comString = realloc(comString, sizeof(char*));
+		
+		strcpy(temp, curString);
+		*comString = temp;
+
+		int k=0;
+		int count = 0;
+		char *string = "\0";
+		for(k=0; curString[k] != '\0';k++){
+			if(curString[k] != '<' && curString[k] != '>')
+				strcat(string, curString[k]);
+			else if(curString[k] == '<')
+				count = 1;
+			else if(curString[k] == '>'){
+				if(count == 1){
+					result->input = string;
+					string[0] = '\0';
+				}
+				count = 2;
+			}
+		}
+
+		switch(count){
+			case 0:
+				break;
+			case 1:
+				result->input = string;
+				break;
+			case 2:
+				result->output = string;
+				break;
+		}
+
+		return result;
+		}
+
+		result->u.word = comString;
+//		free(comString);
+}
 
 command_t makeCommand(char *curString, int type){
 	command_t result = malloc(sizeof(struct command));
@@ -313,22 +362,7 @@ command_t makeCommand(char *curString, int type){
 
 	//set pointer to command if simple command
 	if(type == 0){
-	/*	char** comString = malloc(sizeof(char*)*DEFAULT_BUFFER_SIZE);
-		*comString = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
-		strcpy(comString[0], curString);
-		//strcpy(*(result->u.word), comString);
-		(result->u.word) = comString;
-	*/
-		char** comString = malloc(sizeof(char*));
-		char* temp = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
-		//temp = realloc(temp, sizeof(char)*DEFAULT_BUFFER_SIZE);
-		//comString = realloc(comString, sizeof(char*));
-		
-		strcpy(temp, curString);
-		*comString = temp;
-		result->u.word = comString;
-//		free(comString);
-
+		makeSimpleCommand(result, curString);
 	}
 
 	return result;
