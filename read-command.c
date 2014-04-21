@@ -100,7 +100,21 @@ void destroyEndSpaces(char * input){
 			return;
 	}
 }
+/*void yumCarrots(char * simp)
+{
+unsigned int i = 0;
 
+//if the first char is a <, well... we're in trouble
+//should have error'd in the checkDontShrek
+for(i = 1; i < strlen(simp); i++)
+{
+if(simp[i] = '<' || simp[i] = '>')
+	{
+	
+	}
+}
+*/
+}
 bool isOperand(char c)
 {
 	if(c=='|' || c== '&' || c == ';' || c== '(' 
@@ -113,8 +127,8 @@ bool isOperand(char c)
 bool isSimpleCommand(char c)
 {
 	if(isalnum(c) || c == ' ' || c == '!' || c == '%'||
-			c == '+' || c == ',' || c == '-' || c == '.' ||
-			c == '/' || c == ':' || c == '@' || c == '^'|| c == '_')
+		c == '+' || c == ',' || c == '-' || c == '.' ||
+		c == '/' || c == ':' || c == '@' || c == '^'|| c == '_')
 		return true;
 	return false;
 }
@@ -171,8 +185,9 @@ while(( c = get_next_byte(get_next_byte_argument)) &&( c != EOF))
 		currentString = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
 		currentPos = 0;
 		maxArrayElem++;
-		prev_c = '\0'; //kind of hacky, but ensures the next iteration will
-									//be an append instead of a string-push
+		prev_c = '\0'; //kind of hacky, but ensures the next
+				// iteration will
+				//be an append instead of a string-push
 		}
 		else if(((isOperand(c) != isOperand(prev_c)) ||
 			 (c != '\n' && prev_c == '\n')) ||
@@ -181,8 +196,9 @@ while(( c = get_next_byte(get_next_byte_argument)) &&( c != EOF))
 			destroyBeginSpaces(currentString);
 			strcat(currentString, nullpoint);
 			if(*currentString != '\0'){
-			stringArray[maxArrayElem] = currentString; //pushes c string
-			currentString = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+			stringArray[maxArrayElem] = currentString;
+				 //pushes c string
+			currentString=malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
 				//creates a new c string 
 			currentPos = 0;
 			maxArrayElem++;}
@@ -190,9 +206,9 @@ while(( c = get_next_byte(get_next_byte_argument)) &&( c != EOF))
 			prev_c = c;
 		}
 		else if((prev_c == '\0') ||
-						 (prevIsCommand==currIsCommand))
+					 (prevIsCommand==currIsCommand))
 			{ //if the current string needs to be appended
-				//FIXME: implement what happens if they go over 500 chars
+	//FIXME: implement what happens if they go over 500 chars
 				strcat(currentString, &c);
 				currentPos++;
 				prev_c = c;
@@ -243,17 +259,19 @@ void checkDontShrek(char** array, unsigned int *arraySize){
 				error(5,5,"prev_c"); //makes sure ";;" occurs
 			else if((swag(c) || isSimpleCommand(c)) )
 				{prev_c = c; continue;} //normal case
-			else //c isn't an "acceptable char", as seen in swag(c)
+			else 
+			//c isn't an "acceptable char", as seen in swag(c)
 				error(c,c, "A non-thing is here!");		
 			}
 	if(isOperand(array[i][0]) && (strlen(array[i]) >=3)&&
 		array[i][0] != '\n') 
 		error(7,7,"2 many operands"); //3 operands in a row
-	if(array[i][0] == '<' || array[i][0] == '>' || //carrot at beginning or end
+	if(array[i][0] == '<' || array[i][0] == '>' || 
+				//carrot at beginning or end
 		array[i][strlen(array[i])-1] == '>' ||
 		array[i][strlen(array[i])-1] == '<')
 		error(8,8, "ksjgdlg");
-	if(i == (*arraySize)-1 && isOperand(array[i][0]) && array[i][0] != '\n')
+	if(i == (*arraySize)-1 && isOperand(array[i][0]) && array[i][0]!='\n')
 		error(9,9,"ERROR UP ");
 	if(i > 0 && (array[i][0] == '|' || array[i][0] == '&') &&
 		array[i-1][0] == '\n')
@@ -317,7 +335,8 @@ command_t makeCommand(char *curString, int type){
 }
 
 //for all commands besides simple commands
-command_t combineCommand(command_t command1, command_t command2, command_t operator){
+command_t combineCommand(command_t command1, 
+		command_t command2, command_t operator){
 	//send in same command twice to indicate subshell operator
 	if(command1 == command2)
 		operator->u.subshell_command = command1;
@@ -389,14 +408,16 @@ command_stream_t parse(char **stringArray, unsigned int arrSize){
 				pop(&comStack);
 				command_t command1 = peek(&comStack);
 				pop(&comStack);
-				command_t newCommand = combineCommand(command1, command2, topOp);
+				command_t newCommand = 
+			combineCommand(command1, command2, topOp);
 				push(&comStack, newCommand);
 				topOp = peek(&opStack);
 					pop(&opStack);
 			}//TODO: what happens if there's double paren, e.g. ))
 			command_t command1 = peek(&comStack);
 				pop(&comStack);
-			command_t newCommand = combineCommand(command1, command1, topOp);
+			command_t newCommand =
+			combineCommand(command1, command1, topOp);
 			push(&comStack, newCommand);
 			continue;
 		}
@@ -435,7 +456,7 @@ command_stream_t parse(char **stringArray, unsigned int arrSize){
 			if(peek(&opStack) == NULL)
 				push(&opStack, curCommand);
 			else{
-				if(precedence(curCommand) >= precedence(peek(&opStack)))
+				if(precedence(curCommand) > precedence(peek(&opStack)))
 					push(&opStack, curCommand);
 				else{
 					command_t operator = peek(&opStack);
