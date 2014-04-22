@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <string.h>
 
 int
 command_status (command_t c)
@@ -274,7 +275,7 @@ void executingSimple(command_t c){
   pid = fork();
   if(pid == 0){
     for(k=0; c->u.word[k] != '\0'; k++){
-      if(c->u.word[k] != ' ')
+      if(c->u.word[0][k] != ' ')
         strcat(curString, c->u.word[k]);
       else{
         if(count == -1){

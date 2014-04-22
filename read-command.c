@@ -114,7 +114,6 @@ if(simp[i] = '<' || simp[i] = '>')
 	}
 }
 */
-}
 bool isOperand(char c)
 {
 	if(c=='|' || c== '&' || c == ';' || c== '(' 
