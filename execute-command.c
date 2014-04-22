@@ -13,6 +13,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <string.h>
+#include <stdlib.h>
 
 int
 command_status (command_t c)
@@ -161,7 +162,7 @@ void executingAnd(command_t c){
         if(secondPid < 0)
           error(1, errno, "fork was unsuccessful");
         else if(secondPid == 0){ //inside child process
-          exectute_switch(c->u.command[1]);
+          execute_switch(c->u.command[1]);
           _exit(c->u.command[1]->status); 
         }
         else{
@@ -203,7 +204,7 @@ void executingOr(command_t c){
         if(secondPid < 0)
           error(1, errno, "fork was unsuccessful");
         else if(secondPid == 0){ //inside child process
-          exectute_switch(c->u.command[1]);
+          execute_switch(c->u.command[1]);
           _exit(c->u.command[1]->status); 
         }
         else{
@@ -265,8 +266,8 @@ void executingSubshell(command_t c){
 
 void executingSimple(command_t c){
   int count = -1;
-  char* command;
-  char** comargs;
+  char* command = malloc(sizeof(char)*50);
+  char** comargs = malloc(sizeof(char*)*10);
   int k = 0;
   char* curString;
   pid_t pid;
@@ -308,5 +309,6 @@ execute_command (command_t c, bool time_travel)
   /* FIXME: Replace this with your implementation.  You may need to
      add auxiliary functions and otherwise modify the source code.
      You can also use external functions defined in the GNU C Library.  */
-  error (1, 0, "command execution not yet implemented");
+  //error (1, 0, "command execution not yet implemented");
+     execute_switch(c);
 }

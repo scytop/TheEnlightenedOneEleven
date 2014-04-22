@@ -302,8 +302,10 @@ command_t makeSimpleCommand(command_t result, char* curString){
 		int count = 0;
 		char *string = "\0";
 		for(k=0; curString[k] != '\0';k++){
-			if(curString[k] != '<' && curString[k] != '>')
-				strcat(string, curString[k]);
+			if(curString[k] != '<' && curString[k] != '>'){
+				char* tempptr = &curString[k];
+				strcat(string, tempptr);
+			}
 			else if(curString[k] == '<')
 				count = 1;
 			else if(curString[k] == '>'){
@@ -327,9 +329,9 @@ command_t makeSimpleCommand(command_t result, char* curString){
 		}
 
 		return result;
-		}
+		
 
-		result->u.word = comString;
+		//result->u.word = comString;
 //		free(comString);
 }
 
