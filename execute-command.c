@@ -131,7 +131,7 @@ void executingPipe(command_t c)
   }
 }
 
-void executingAnd(command_t){
+void executingAnd(command_t c){
   pid_t firstPid;
   pid_t secondPid;
   int eStatus;
