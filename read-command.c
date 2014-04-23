@@ -303,8 +303,10 @@ command_t makeSimpleCommand(command_t result, char* curString){
 		char *string = "\0";
 		for(k=0; curString[k] != '\0';k++){
 			if(curString[k] != '<' && curString[k] != '>'){
-				char* tempptr = &curString[k];
-				strcat(string, tempptr);
+				char * temp = malloc(sizeof(char)*2);
+				temp[0] = curString[k];
+				temp[1] = '\0';
+				strcat(string, temp);
 			}
 			else if(curString[k] == '<')
 				count = 1;
