@@ -307,8 +307,9 @@ command_t makeSimpleCommand(command_t result, char* curString){
 			//	tmp[0] = curString[k];
 			//	tmp[1] = '\0';
 			//strncat(string, tmp, 1);
+			size_t charcount = strlen(str);
 			str[strlen(str)] = curString[k];
-			str[strlen(str)] = '\0';
+			str[charcount + 1] = '\0';
 			}
 			else if(curString[k] == '<'){
 				count = 1;
