@@ -387,7 +387,7 @@ command_t makeCommand(char *curString, int type){
 
 
 	if(type == 0){
-		result->u.word = malloc(sizeof(char)*50);
+	//	result->u.word = malloc(sizeof(char)*50);
 		makeSimpleCommand(result, curString);
 	}
 
