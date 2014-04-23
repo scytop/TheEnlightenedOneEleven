@@ -313,6 +313,8 @@ command_t makeSimpleCommand(command_t result, char* curString){
 			else if(curString[k] == '<'){
 				count = 1;
 				//(result->u.word) = &str;	
+				destroyBeginSpaces(str);
+				destroyEndSpaces(str);
 				char** tempdoe = malloc(sizeof(char*));
 				strcpy(*(tempdoe), str);
 				result->u.word = tempdoe;
@@ -324,6 +326,8 @@ command_t makeSimpleCommand(command_t result, char* curString){
 					str[0] = '\0';
 				}
 				count = 2;
+				destroyBeginSpaces(str);
+				destroyEndSpaces(str);
 				char** tempdoe = malloc(sizeof(char*));
 				strcpy(*(tempdoe), str);
 				result->u.word = tempdoe;
@@ -333,6 +337,8 @@ command_t makeSimpleCommand(command_t result, char* curString){
 
 		switch(count){
 			case 0:
+				destroyBeginSpaces(str);
+				destroyEndSpaces(str);
 				char** tempdoe = malloc(sizeof(char*));
 				strcpy(*(tempdoe), str);
 				result->u.word = tempdoe;
