@@ -323,14 +323,17 @@ command_t makeSimpleCommand(command_t result, char* curString){
 			else if(curString[k] == '>'){
 				if(count == 1){
 					result->input = str;
-					str[0] = '\0';
+				//	str[0] = '\0';
+				}
+				else if(count == 0){
+					destroyBeginSpaces(str);
+					destroyEndSpaces(str);
+					char** tempdoe = malloc(sizeof(char*));
+					strcpy(*(tempdoe), str);
+					result->u.word = tempdoe;
 				}
 				count = 2;
-				destroyBeginSpaces(str);
-				destroyEndSpaces(str);
-				char** tempdoe = malloc(sizeof(char*));
-				strcpy(*(tempdoe), str);
-				result->u.word = tempdoe;
+				
 				str[0] = '\0';
 			}
 		}
