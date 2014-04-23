@@ -312,8 +312,11 @@ command_t makeSimpleCommand(command_t result, char* curString){
 			}
 			else if(curString[k] == '<'){
 				count = 1;
-				(result->u.word) = &str;	
-				str = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+				//(result->u.word) = &str;	
+				char** tempdoe = malloc(sizeof(char*));
+				strcpy(*(tempdoe), str);
+				result->u.word = tempdoe;
+				str[0] = '\0';
 			}
 			else if(curString[k] == '>'){
 				if(count == 1){
@@ -321,14 +324,18 @@ command_t makeSimpleCommand(command_t result, char* curString){
 					str[0] = '\0';
 				}
 				count = 2;
-				result->u.word = str;	
+				char** tempdoe = malloc(sizeof(char*));
+				strcpy(*(tempdoe), str);
+				result->u.word = tempdoe;
 				str[0] = '\0';
 			}
 		}
 
 		switch(count){
 			case 0:
-				result-> u.word = str;
+				char** tempdoe = malloc(sizeof(char*));
+				strcpy(*(tempdoe), str);
+				result->u.word = tempdoe;
 				break;
 			case 1:
 				result->input = str;
