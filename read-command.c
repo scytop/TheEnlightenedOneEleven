@@ -339,11 +339,8 @@ command_t makeSimpleCommand(command_t result, char* curString){
 			case 0:
 				destroyBeginSpaces(str);
 				destroyEndSpaces(str);
-				char** tempdoe = malloc(sizeof(char*));
-				char* tmpStr = malloc(sizeof(char)*50);
-				strcpy(tmpStr, str);
-				tempdoe = &tmpStr;
-				result->u.word = tempdoe;
+				
+				result->u.word = comString;
 				break;
 			case 1:
 				result->input = str;
