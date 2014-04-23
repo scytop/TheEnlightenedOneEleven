@@ -297,36 +297,44 @@ command_t makeSimpleCommand(command_t result, char* curString){
 		
 		strcpy(temp, curString);
 		*comString = temp;
-
+		
 		int k=0;
 		int count = 0;
-		char *string = "\0";
+		char* str = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+		char* tmp = malloc(sizeof(char)*2);
 		for(k=0; curString[k] != '\0';k++){
 			if(curString[k] != '<' && curString[k] != '>'){
-				char * temp = malloc(sizeof(char)*2);
-				temp[0] = curString[k];
-				temp[1] = '\0';
-				strcat(string, temp);
+			//	tmp[0] = curString[k];
+			//	tmp[1] = '\0';
+			//strncat(string, tmp, 1);
+			str[strlen(str)] = curString[k];
+			str[strlen(str)] = '\0';
 			}
-			else if(curString[k] == '<')
+			else if(curString[k] == '<'){
 				count = 1;
+				(result->u.word) = &str;	
+				str = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+			}
 			else if(curString[k] == '>'){
 				if(count == 1){
-					result->input = string;
-					string[0] = '\0';
+					result->input = str;
+					str[0] = '\0';
 				}
 				count = 2;
+				result->u.word = str;	
+				str[0] = '\0';
 			}
 		}
 
 		switch(count){
 			case 0:
+				result-> u.word = str;
 				break;
 			case 1:
-				result->input = string;
+				result->input = str;
 				break;
 			case 2:
-				result->output = string;
+				result->output = str;
 				break;
 		}
 
