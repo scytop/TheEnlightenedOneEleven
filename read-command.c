@@ -316,9 +316,9 @@ command_t makeSimpleCommand(command_t result, char* curString){
 				//(result->u.word) = &str;	
 				destroyBeginSpaces(str);
 				destroyEndSpaces(str);
-				char** tempdoe = malloc(sizeof(char*));
-				strcpy(*(tempdoe), str);
-				result->u.word = tempdoe;
+				char* tempdoe = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+				strcpy(tempdoe, str);
+				result->u.word = &tempdoe;
 				str[0] = '\0';
 			}
 			else if(curString[k] == '>'){
@@ -329,9 +329,9 @@ command_t makeSimpleCommand(command_t result, char* curString){
 				else if(count == 0){
 					destroyBeginSpaces(str);
 					destroyEndSpaces(str);
-					char** tempdoe = malloc(sizeof(char*));
-					strcpy(*(tempdoe), str);
-					result->u.word = tempdoe;
+					char* tempdoe = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+					strcpy(tempdoe, str);
+					result->u.word = &tempdoe;
 				}
 				count = 2;
 				
