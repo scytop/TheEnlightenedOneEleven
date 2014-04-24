@@ -302,7 +302,7 @@ command_t makeSimpleCommand(command_t result, char* curString){
 		int count = 0;
 		char* str = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
 		char* tmp = malloc(sizeof(char)*2);
-		result->u.word = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+		result->u.word = malloc(sizeof(char));
 		for(k=0; curString[k] != '\0';k++){
 			if(curString[k] != '<' && curString[k] != '>'){
 			//	tmp[0] = curString[k];
@@ -319,7 +319,9 @@ command_t makeSimpleCommand(command_t result, char* curString){
 				destroyEndSpaces(str);
 				char* tempdoe = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
 				strcpy(tempdoe, str);
-				result->u.word = &tempdoe;
+				char ** temp2 = malloc(sizeof(char*));
+				*temp2 = tempdoe;
+				result->u.word = temp2;
 				str[0] = '\0';
 			}
 			else if(curString[k] == '>'){
@@ -327,15 +329,19 @@ command_t makeSimpleCommand(command_t result, char* curString){
 				destroyEndSpaces(str);
 
 				if(count == 1){
-					result->input = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
-					*(result->input) = *str;
+				//	result->input = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+				//	*(result->input) = str;
 				//	str[0] = '\0';
+				char* tempdoe = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+				strcpy(tempdoe, str);
+				result->input = tempdoe;
+				
 				}
 				else if(count == 0){
 					
-					char* tempdoe = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
-					strcpy(tempdoe, str);
-					result->u.word = &tempdoe;
+					char* temp4 = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+					strcpy(temp4, str);
+					*(result->u.word) = temp4;
 				}
 				count = 2;
 				
