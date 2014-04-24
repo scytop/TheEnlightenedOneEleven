@@ -159,6 +159,7 @@ void executingAnd(command_t c){
       c->status = -1; 
     else{ //check second command if first command succeeded
       secondPid = fork();
+	waitpid(secondPid, &eStatus, 0);
         if(secondPid < 0)
           error(1, errno, "fork was unsuccessful");
         else if(secondPid == 0){ //inside child process
@@ -300,7 +301,7 @@ void executingSimple(command_t c){
     error(1, errno, "fork was unsuccessful");
   }
 
-  execvp(command, comargs);
+  execvp(c->u.word[0], c->u.word);
 }
 
 void
