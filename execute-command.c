@@ -363,7 +363,7 @@ void executingSimple(command_t c){
   execvp(c->u.word[0], c->u.word);
 =======
   execvp(command, comargs);*/
->>>>>>> d522a7bb748b7ef33a20f7eddbcd28165f1bf1b9
+//>>>>>>> d522a7bb748b7ef33a20f7eddbcd28165f1bf1b9
 }
 
 void
