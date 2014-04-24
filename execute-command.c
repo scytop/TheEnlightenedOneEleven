@@ -138,7 +138,7 @@ void executingAnd(command_t c){
   pid_t secondPid;
   int eStatus;
 
-  firstPid = fork();
+  /*firstPid = fork();
   if (firstPid < 0)
   {
     error(1, errno, "fork was unsuccessful");
@@ -172,7 +172,14 @@ void executingAnd(command_t c){
           c->status = c->u.command[1]->status;
         }
     }
-  }
+  }*/
+    execute_switch(c->u.command[0]);
+    if(c->u.command[0]->status != 0) //check to see if first command failed
+      c->status = -1;
+    else{
+      execute_switch(c->u.command[1]);
+      c->status = c->u.command[1]->status;
+    }
 
 }
 
@@ -181,7 +188,7 @@ void executingOr(command_t c){
   pid_t secondPid;
   int eStatus;
 
-  firstPid = fork();
+  /*firstPid = fork();
   if (firstPid < 0)
   {
     error(1, errno, "fork was unsuccessful");
@@ -214,7 +221,15 @@ void executingOr(command_t c){
           c->status = c->u.command[1]->status;
         }
     }
-  }
+  }*/
+execute_switch(c->u.command[0]);
+    if(c->u.command[0]->status == 0) //check to see if first command succeeded
+      c->status = 0;
+    else{
+      execute_switch(c->u.command[1]);
+      c->status = c->u.command[1]->status;
+    }
+
 }
 
 void executingSequence(command_t c){
