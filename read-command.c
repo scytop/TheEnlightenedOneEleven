@@ -361,8 +361,11 @@ command_t makeSimpleCommand(command_t result, char* curString){
 				break;
 			case 2:
 				
-				result->output = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
-				*(result->output) = *str;
+				result->output = malloc(sizeof(char));
+				char* temp5 = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+				strcpy(temp5, str);
+				(result->output) = temp5;
+				str[0] = '\0';
 				break;
 		}
 
