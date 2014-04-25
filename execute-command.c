@@ -28,6 +28,27 @@ void executingOr(command_t c);
 void executingSequence(command_t c);
 void executingPipe(command_t c);
 
+typedef struct{
+command_t cmd;
+pid_t pid;
+struct graphnode **before;
+}graphnode;
+
+typedef struct{
+graphnode* gnode;
+char** readlist;
+char** writelist;
+}listnode;
+
+typedef struct{
+listnode** no_dependencies;
+listnode** dependencies;
+}dependencyGraph;
+
+
+
+
+
 void execute_switch(command_t c)
 {
   switch(c->type)

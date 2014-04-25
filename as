@@ -1,1 +1,1 @@
-cat < fail.txt || ls.txt
+cat < (fail.txt || ls.txt)
