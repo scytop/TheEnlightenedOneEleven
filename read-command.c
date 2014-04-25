@@ -100,6 +100,35 @@ void destroyEndSpaces(char * input){
 			return;
 	}
 }
+
+char** tokenize_expression(char* str){
+int len = strlen(str);
+char** tokens = checked_malloc(len*sizeof(char*));
+char* temp = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+int counter = 0;
+int i = 0;
+int size = 0;
+//hope the first char isn't a space. Use destroy spaces first
+temp[0] = str[0];
+for(i = 1; i < len; i++)
+{
+	if (str[i] == ' ')
+	{
+	tokens[counter] = temp;
+	counter++;
+	temp = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+	}
+	else
+	{
+	size = strlen(temp);
+	temp[size] = str[i];
+	temp[size+1] = '\0';
+	}
+}
+tokens[counter] = temp;
+return tokens;
+}
+
 /*void yumCarrots(char * simp)
 {
 unsigned int i = 0;
@@ -302,7 +331,7 @@ command_t makeSimpleCommand(command_t result, char* curString){
 		int count = 0;
 		char* str = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
 		char* tmp = malloc(sizeof(char)*2);
-		result->u.word = malloc(sizeof(char));
+		//result->u.word = malloc(sizeof(char));
 		for(k=0; curString[k] != '\0';k++){
 			if(curString[k] != '<' && curString[k] != '>'){
 			//	tmp[0] = curString[k];
@@ -317,11 +346,11 @@ command_t makeSimpleCommand(command_t result, char* curString){
 				//(result->u.word) = &str;	
 				destroyBeginSpaces(str);
 				destroyEndSpaces(str);
-				char* tempdoe = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+				/*char* tempdoe = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
 				strcpy(tempdoe, str);
 				char ** temp2 = malloc(sizeof(char*));
-				*temp2 = tempdoe;
-				result->u.word = temp2;
+				*temp2 = tempdoe;*/
+				result->u.word = tokenize_expression(str);
 				str[0] = '\0';
 			}
 			else if(curString[k] == '>'){
@@ -339,9 +368,9 @@ command_t makeSimpleCommand(command_t result, char* curString){
 				}
 				else if(count == 0){
 					
-					char* temp4 = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
-					strcpy(temp4, str);
-					*(result->u.word) = temp4;
+					/*char* temp4 = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+					strcpy(temp4, str);*/
+					result->u.word= tokenize_expression(str);
 				}
 				count = 2;
 				
@@ -354,7 +383,7 @@ command_t makeSimpleCommand(command_t result, char* curString){
 		switch(count){
 			case 0:
 				
-				result->u.word = comString;
+				result->u.word = tokenize_expression(str);
 				break;
 			case 1:
 				result->input = str;
