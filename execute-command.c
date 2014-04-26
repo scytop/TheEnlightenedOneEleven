@@ -503,7 +503,17 @@ void executingSimple(command_t c){
         }
       }
     }*/
-
+    if (c->input != NULL){
+      int in = open(c->input, O_RDWR);
+      dup2(in, 0);
+      close(in);
+    }
+    if (c->output != NULL){
+      int out = open(c->output, O_CREAT | O_WRONLY | O_TRUNC,
+          S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR);
+      dup2(out, 1);
+      close(out);
+    }
   execvp(c->u.word[0], c->u.word);
   c->status = -1;
  }
