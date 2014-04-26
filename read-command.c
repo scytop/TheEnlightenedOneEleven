@@ -329,7 +329,7 @@ void checkDontShrek(char** array, unsigned int *arraySize){
 	}
 }
 
-command_t makeSimpleCommand(command_t result, char* curString){
+void makeSimpleCommand(command_t result, char* curString){
 	/*	char** comString = malloc(sizeof(char*)*DEFAULT_BUFFER_SIZE);
 		*comString = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
 		strcpy(comString[0], curString);
@@ -415,14 +415,18 @@ command_t makeSimpleCommand(command_t result, char* curString){
 				break;
 		}
 
-		return result;
+		//return result;
 		
 
 		//result->u.word = comString;
 //		free(comString);
 }
 
-command_t makeCommand(char *curString, int type){
+//command_t subIOCheck(command_t result, char *nextString){
+//	if(nextString[0] == '<')
+//}
+
+command_t makeCommand(char *curString, char *nextString, int type){
 	command_t result = malloc(sizeof(struct command));
 
 	//set type of command
@@ -455,6 +459,9 @@ command_t makeCommand(char *curString, int type){
 	//	result->u.word = malloc(sizeof(char)*50);
 		makeSimpleCommand(result, curString);
 	}
+
+	//if(type == 6)
+	//	subIOCheck(result, nextString);
 
 	return result;
 }
@@ -568,7 +575,7 @@ command_stream_t parse(char **stringArray, unsigned int arrSize){
 		}
 
 		command_t curCommand = malloc(sizeof(struct command));
-		curCommand = makeCommand(stringArray[k], comType);
+		curCommand = makeCommand(stringArray[k], stringArray[k+1], comType);
 		if(curCommand->type == SIMPLE_COMMAND) //not an operator
 			push(&comStack, curCommand);
 		else if(curCommand->type == SUBSHELL_COMMAND) //encounter open paren
