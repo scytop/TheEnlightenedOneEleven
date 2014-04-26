@@ -211,8 +211,10 @@ while(( c = get_next_byte(get_next_byte_argument)) &&( c != EOF)){
 
 		//These are singular operands, always, so this should push
 		//and create a new cstring
-		if (c == '(')
+		if (c == '('){
 			openCount++;
+			strcat(currentString, &c);
+		}
 		if (c == ')')
 			closeCount++;	
 			
