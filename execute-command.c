@@ -305,7 +305,7 @@ void executingSimple(command_t c){
 
 
   
- /* int count = -1;
+  int count = -1;
   char* command = malloc(sizeof(char)*50);
   char** comargs = malloc(sizeof(char*)*10);
   int k = 0;
@@ -313,9 +313,9 @@ void executingSimple(command_t c){
   pid_t pid;
   int eStatus;
 
- // pid = fork();
- // if(pid == 0){
-    for(k=0; c->u.word[k] != '\0'; k++){
+  pid = fork();
+  if(pid == 0){
+    /*for(k=0; c->u.word[k] != '\0'; k++){
       if(c->u.word[0][k] != ' ')
         strcat(curString, c->u.word[k]);
       else{
@@ -330,17 +330,19 @@ void executingSimple(command_t c){
           count++;
         }
       }
-    }
-// }
- // else if(pid > 0){
- //   waitpid(pid, &eStatus, 0);
- //   c->status = eStatus;
- // }
-  //else{
-   // error(1, errno, "fork was unsuccessful");
-//  }*/
+    }*/
+
   execvp(c->u.word[0], c->u.word);
   c->status = -1;
+ }
+  else if(pid > 0){
+    waitpid(pid, &eStatus, 0);
+    c->status = eStatus;
+  }
+  else{
+    error(1, errno, "fork was unsuccessful");
+  }
+
 }
 
 
