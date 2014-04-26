@@ -1,17 +1,8 @@
 /*#define GRAPH_SIZE 25
 
-int
-command_status (command_t c)
-{
-  return c->status;
-}
 
-void executingSimple(command_t c);
-void executingSubshell(command_t c);
-void executingAnd(command_t c);
-void executingOr(command_t c);
-void executingSequence(command_t c);
-void executingPipe(command_t c);
+
+
 
 typedef struct graphNode{
 command_t cmd;

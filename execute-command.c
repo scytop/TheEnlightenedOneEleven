@@ -16,9 +16,18 @@
 #include <stdlib.h>
 
 
-	
+int
+command_status (command_t c)
+{
+  return c->status;
+}	
 
-
+void executingSimple(command_t c);
+void executingSubshell(command_t c);
+void executingAnd(command_t c);
+void executingOr(command_t c);
+void executingSequence(command_t c);
+void executingPipe(command_t c);
 
 void execute_switch(command_t c)
 {
@@ -126,11 +135,11 @@ void executingPipe(command_t c)
 }
 
 void executingAnd(command_t c){
-  pid_t firstPid;
+  /*pid_t firstPid;
   pid_t secondPid;
   int eStatus;
 
-  /*firstPid = fork();
+  firstPid = fork();
   if (firstPid < 0)
   {
     error(1, errno, "fork was unsuccessful");
@@ -176,11 +185,11 @@ void executingAnd(command_t c){
 }
 
 void executingOr(command_t c){
-  pid_t firstPid;
+  /*pid_t firstPid;
   pid_t secondPid;
   int eStatus;
 
-  /*firstPid = fork();
+  firstPid = fork();
   if (firstPid < 0)
   {
     error(1, errno, "fork was unsuccessful");
@@ -276,11 +285,11 @@ void executingSimple(command_t c){
 
 
   
-  int count = -1;
-  char* command = malloc(sizeof(char)*50);
-  char** comargs = malloc(sizeof(char*)*10);
-  int k = 0;
-  char* curString;
+ // int count = -1;
+  //char* command = malloc(sizeof(char)*50);
+  //char** comargs = malloc(sizeof(char*)*10);
+  //int k = 0;
+ // char* curString;
   pid_t pid;
   int eStatus;
 
@@ -311,9 +320,9 @@ void executingSimple(command_t c){
       int out = open(c->output, O_CREAT | O_WRONLY | O_TRUNC,
           S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR);
       dup2(out, 1);
-      close(execvp);
+      close(out);
     }
-  out(c->u.word[0], c->u.word);
+  execvp(c->u.word[0], c->u.word);
   c->status = -1;
  }
   else if(pid > 0){
