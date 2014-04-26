@@ -310,7 +310,7 @@ void checkDontShrek(char** array, unsigned int *arraySize){
 	if(isOperand(array[i][0]) && (strlen(array[i]) >=3)&&
 		array[i][0] != '\n') 
 		error(7,7,"2 many operands"); //3 operands in a row
-	if(array[i][0] == '<' || array[i][0] == '>' || 
+	if(strcmp(array[i][0],"<") == 0 || strcmp(array[i][0],">") == 0 || 
 				//carrot at beginning or end
 		array[i][strlen(array[i])-1] == '>' ||
 		array[i][strlen(array[i])-1] == '<')
