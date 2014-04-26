@@ -340,6 +340,7 @@ void executingSimple(command_t c){
    // error(1, errno, "fork was unsuccessful");
 //  }*/
   execvp(c->u.word[0], c->u.word);
+  c->status = -1;
 }
 
 
