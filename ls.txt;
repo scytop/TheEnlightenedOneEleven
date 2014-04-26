@@ -1,15 +1,17 @@
 alloc.c
 alloc.h
 alloc.o
+as
 asd
 a.txt
 check-dist
 command.h
 command-internals.h
-ectemp.c
 execute-command.c
 execute-command.o
+hello.txt
 helper functions.c
+ls.txt
 ls.txt;
 main.c
 main.o

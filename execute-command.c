@@ -15,6 +15,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#define GRAPH_SIZE 25
+
 int
 command_status (command_t c)
 {
@@ -31,21 +33,121 @@ void executingPipe(command_t c);
 typedef struct{
 command_t cmd;
 pid_t pid;
-struct graphnode **before;
-}graphnode;
+struct graphNode **before;
+}graphNode;
 
 typedef struct{
+char* str;
+struct string_q* next;
+}string_q;
+
+bool hasSimilar(string_q* l1, string_q* l2)
+{
+//returns true if there exists an element that occurs
+//in both l1 and l2
+string_q* t1 = l1;
+string_q* t2 = l2;
+
+if(t1 == NULL)
+	return false;
+else if (t2 == NULL)
+{
+return hasSimilar(t1->next, l2);
+}
+if(strcmp(t1->str, t2->str) == 0)
+	return true;
+else
+	return(t1, t2->next); 
+}
+
+typedef struct listNode{
 graphnode* gnode;
-char** readlist;
-char** writelist;
-}listnode;
+string_q* readlist; //don't forget to malloc these!
+string_q* writelist;
+struct listNode* next;
+}listNode;
 
-typedef struct{
-listnode** no_dependencies;
-listnode** dependencies;
+typedef struct dependencyGraph{
+listnode* no_dependencies;
+listnode* dependencies;
+int ndSize;
+int dSize;
 }dependencyGraph;
 
+void linsert(string_q* root, char* elem)
+{
+string_q* temp = root;
+while(temp != NULL)
+{
+if(temp->next == NULL)
+{
+	string_q* newGuy = malloc(sizeof(string_q));
+	newGuy->next = NULL;
+	temp-> next = newGuy;
+	strcpy(newGuy->str, elem);	
+	break;
+}
+else
+{
+temp = temp->next;
+}
+}
+}//not efficient rn, can come back later to "insert sort"
 
+void proCom(command_t c, string_q* rl, string_q* wl){
+if(c->type == SIMPLE_COMMAND){
+	if(c->u.input != NULL) linsert(rl, c->u.input);
+	int i = 0;
+	while(c->u.word[i][0] != '\0')//FIXME: THIS IS WHERE WE GET MESSED UP
+	{
+	linsert(rl, c->u.word[i]);
+	i++;
+	}
+	if(c->u.output != NULL) linsert(wl, c->u.output);}
+else if(c->type == SUBSHELL_COMMAND)
+{
+	if(c->u.input != NULL) linsert(rl, c->u.input);
+	if(c->u.input != NULL) linsert(wl, c->u.output);
+	proCom(c->u.subshell_command, rl, wl);
+}
+else
+{
+	proCom(c->u.command[0], rl, wl);
+	proCom(c->u.command[1], rl, wl);
+}
+}
+
+dependencyGraph create_graph(command_stream_t cs){
+	dependencyGraph* result = malloc(sizeof(dependencyGraph));
+	result->ndSize = 0;
+	result->dSize  = 0;
+	listNode* current = malloc(sizeof(listNode));
+	listNode* start = current;
+	current->next = NULL;
+
+	command_t command;
+	//build the first linked list of all listNodes
+	while(command = read_command_stream(cs))
+	{
+	listNode* l = malloc(sizeof(listNode));
+	proCom(command->command, &(l->readlist), &(l->writelist));
+	graphNode* g = malloc(sizeof(graphNode));
+	g->cmd = command->command;
+	*(g->before) = NULL;
+	l->gnode = g;
+	//builds a single node	
+
+	current-> next = l;
+	l->next= NULL;
+	current = l;
+	//add it to the list
+	}
+	start = current->next;
+	
+	//start has a linked list of read/write lists
+
+
+}
 
 
 

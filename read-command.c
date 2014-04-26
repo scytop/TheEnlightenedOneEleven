@@ -639,8 +639,9 @@ read_command_stream (command_stream_t s)
 		result = s->iterator->command;
 		s->iterator = s->iterator->next;
 	}
-	else
-		return NULL;
+	else{
+		s->iterator = s->start;
+		return NULL;}
 	return result;
 
   /* FIXME: Replace this with your implementation too.  */
