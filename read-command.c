@@ -213,15 +213,21 @@ while(( c = get_next_byte(get_next_byte_argument)) &&( c != EOF)){
 		//and create a new cstring
 		if (c == '('){
 			openCount++;
-			strcat(currentString, &c);
 		}
-		if (c == ')')
-			closeCount++;	
+		if (c == ')'){
+			closeCount++;
+			stringArray[maxArrayElem] = currentString;
+			currentString = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+			currentPos = 0;
+			maxArrayElem++;
+		}
 	
-		//strcat(currentString, &c);
+		strcat(currentString, &c);
 		strcat(currentString, nullpoint);
+		
 		stringArray[maxArrayElem] = currentString;
 		currentString = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+	
 		currentPos = 0;
 		maxArrayElem++;
 		prev_c = '\0'; //kind of hacky, but ensures the next
@@ -309,7 +315,8 @@ void checkDontShrek(char** array, unsigned int *arraySize){
 		array[i][strlen(array[i])-1] == '>' ||
 		array[i][strlen(array[i])-1] == '<')
 		error(8,8, "ksjgdlg");
-	if(i == (*arraySize)-1 && isOperand(array[i][0]) && array[i][0]!='\n')
+	if(i == (*arraySize)-1 && isOperand(array[i][0]) && array[i][0]!='\n'
+		&& array[i][0] != ')')
 		error(9,9,"ERROR UP ");
 	if(i > 0 && (array[i][0] == '|' || array[i][0] == '&') &&
 		array[i-1][0] == '\n')
