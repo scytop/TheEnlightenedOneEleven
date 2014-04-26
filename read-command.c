@@ -457,20 +457,16 @@ command_t combineCommand(command_t command1,
 
 int precedence(command_t command){
 	if(command->type == SEQUENCE_COMMAND)
-//		return 0;
-		return 3;
-	else if(command->type == PIPE_COMMAND)
-		return 1;
-//		return 2;
-	else if(command->type == SUBSHELL_COMMAND)
-		return 2;
-//		return 1;
-	else //either AND or OR command
-//		return 3;
 		return 0;
+	else if(command->type == PIPE_COMMAND)
+		return 2;
+	else if(command->type == SUBSHELL_COMMAND)
+		return 1;
+	else //either AND or OR command
+		return 3;
 
 
-//completely messed up, I think
+//fuckin fixed it you shitlord
 }
 
 command_stream_t parse(char **stringArray, unsigned int arrSize){

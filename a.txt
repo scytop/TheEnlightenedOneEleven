@@ -1,1 +1,4 @@
-echo a
+echo a || echo b
+echo c && nop
+notacommand || echo d
+notacommand && echo e

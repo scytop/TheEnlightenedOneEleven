@@ -30,7 +30,7 @@ void executingOr(command_t c);
 void executingSequence(command_t c);
 void executingPipe(command_t c);
 
-typedef struct{
+/*typedef struct{
 command_t cmd;
 pid_t pid;
 struct graphNode **before;
@@ -117,7 +117,7 @@ else
 }
 }
 
-dependencyGraph create_graph(command_stream_t cs){
+/*dependencyGraph create_graph(command_stream_t cs){
 	dependencyGraph* result = malloc(sizeof(dependencyGraph));
 	result->ndSize = 0;
 	result->dSize  = 0;
@@ -147,7 +147,7 @@ dependencyGraph create_graph(command_stream_t cs){
 	//start has a linked list of read/write lists
 
 
-}
+}*/
 
 
 
