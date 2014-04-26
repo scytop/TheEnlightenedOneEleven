@@ -217,8 +217,7 @@ while(( c = get_next_byte(get_next_byte_argument)) &&( c != EOF)){
 		}
 		if (c == ')')
 			closeCount++;	
-			
-
+	
 		//strcat(currentString, &c);
 		strcat(currentString, nullpoint);
 		stringArray[maxArrayElem] = currentString;
@@ -255,20 +254,21 @@ while(( c = get_next_byte(get_next_byte_argument)) &&( c != EOF)){
 }
 
 //at EOF, push current string onto the array
-if(prev_c == '\n'){
+if(prev_c == '\n')
 	currentString[currentPos] = '\0';
-}
 
 if(openCount != closeCount)
 	error(2,2, "Open Paren Count doesn't match Close Paren Count");
+
 if(currentString[0] !=  '\0'){
 	strcat(currentString, nullpoint);
 	stringArray[maxArrayElem] = currentString;
 	maxArrayElem++;
 }
-if(currIsCommand && prev_c != '\n'){
+
+if(currIsCommand && prev_c != '\n')
 	error(3,3, "Operator is at the end D:");
-}
+
 unsigned int i = 0;
 for(i = 0; i < maxArrayElem; i++){
 	destroyBeginSpaces(stringArray[i]);
