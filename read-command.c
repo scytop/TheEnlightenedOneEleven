@@ -189,81 +189,91 @@ int closeCount = 0;
 bool isComment = false;
 
 
-while(( c = get_next_byte(get_next_byte_argument)) &&( c != EOF))
-	{
-	if(c == '#'){isComment = true;continue;}
-	if(c != '\n' && isComment) {continue;}
-	if(isComment && c== '\n'){isComment = false;}
-		prevIsCommand = isOperand(prev_c);
-		currIsCommand = isOperand(c);
-		//assume that only valid inputs are allowed
-		if (c == '(' || c == ')' || c == ';')
-		{
-			//These are singular operands, always, so this should push
-			//and create a new cstring
-			if (c == '(')
-				openCount++;
-			if (c == ')')
-				closeCount++;	
-			
+while(( c = get_next_byte(get_next_byte_argument)) &&( c != EOF)){
 
-			//strcat(currentString, &c);
-			strcat(currentString, nullpoint);
-			stringArray[maxArrayElem] = currentString;
-			currentString = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
-			currentPos = 0;
-			maxArrayElem++;
-			prev_c = '\0'; //kind of hacky, but ensures the next
-					// iteration will
-					//be an append instead of a string-push
-		}
-		else if(((isOperand(c) != isOperand(prev_c)) ||
-			 (c != '\n' && prev_c == '\n')) ||
-			((prev_c == '|' || prev_c == '&') && c == '\n')	)
-		{ //if we need to push the current string to the stringArray
-			destroyBeginSpaces(currentString);
-			strcat(currentString, nullpoint);
-			if(*currentString != '\0'){
-			stringArray[maxArrayElem] = currentString;
-				 //pushes c string
-			currentString=malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
-				//creates a new c string 
-			currentPos = 0;
-			maxArrayElem++;}
-			strcat(currentString, &c);
-			prev_c = c;
-		}
-		else if((prev_c == '\0') ||
-					 (prevIsCommand==currIsCommand))
-			{ //if the current string needs to be appended
-	//FIXME: implement what happens if they go over 500 chars
-				strcat(currentString, &c);
-				currentPos++;
-				prev_c = c;
-
-			}
+	if(c == '#'){
+		isComment = true;
+		continue;
 	}
+
+	if(c != '\n' && isComment){
+		continue;
+	}
+
+	if(isComment && c== '\n'){
+		isComment = false;
+	}
+
+	prevIsCommand = isOperand(prev_c);
+	currIsCommand = isOperand(c);
+	//assume that only valid inputs are allowed
+	if (c == '(' || c == ')' || c == ';'){
+
+		//These are singular operands, always, so this should push
+		//and create a new cstring
+		if (c == '('){
+			openCount++;
+			strcat(currentString, &c);
+		}
+		if (c == ')')
+			closeCount++;	
+	
+		//strcat(currentString, &c);
+		strcat(currentString, nullpoint);
+		stringArray[maxArrayElem] = currentString;
+		currentString = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+		currentPos = 0;
+		maxArrayElem++;
+		prev_c = '\0'; //kind of hacky, but ensures the next
+				// iteration will
+				//be an append instead of a string-push
+	}
+	else if(((isOperand(c) != isOperand(prev_c)) ||
+			(c != '\n' && prev_c == '\n')) ||
+			((prev_c == '|' || prev_c == '&') && c == '\n')	){ 
+		//if we need to push the current string to the stringArray
+		destroyBeginSpaces(currentString);
+		strcat(currentString, nullpoint);
+		if(*currentString != '\0'){
+		stringArray[maxArrayElem] = currentString;
+			 //pushes c string
+		currentString=malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+			//creates a new c string 
+		currentPos = 0;
+		maxArrayElem++;}
+		strcat(currentString, &c);
+		prev_c = c;
+	}
+	else if((prev_c == '\0') || (prevIsCommand==currIsCommand)){
+	 //if the current string needs to be appended
+	//FIXME: implement what happens if they go over 500 chars
+			strcat(currentString, &c);
+			currentPos++;
+			prev_c = c;
+	}
+}
+
 //at EOF, push current string onto the array
 if(prev_c == '\n')
-	{currentString[currentPos] = '\0';}
+	currentString[currentPos] = '\0';
+
 if(openCount != closeCount)
 	error(2,2, "Open Paren Count doesn't match Close Paren Count");
-if(currentString[0] !=  '\0')
-{
-strcat(currentString, nullpoint);
-stringArray[maxArrayElem] = currentString;
-maxArrayElem++;
+
+if(currentString[0] !=  '\0'){
+	strcat(currentString, nullpoint);
+	stringArray[maxArrayElem] = currentString;
+	maxArrayElem++;
 }
+
 if(currIsCommand && prev_c != '\n')
-{
-error(3,3, "Operator is at the end D:");
-}
+	error(3,3, "Operator is at the end D:");
+
 unsigned int i = 0;
-for(i = 0; i < maxArrayElem; i++)
-	{
+for(i = 0; i < maxArrayElem; i++){
 	destroyBeginSpaces(stringArray[i]);
 	destroyEndSpaces(stringArray[i]);
-	}
+}
 *arraySize = maxArrayElem;
 return stringArray;
 
@@ -457,20 +467,16 @@ command_t combineCommand(command_t command1,
 
 int precedence(command_t command){
 	if(command->type == SEQUENCE_COMMAND)
-//		return 0;
-		return 3;
-	else if(command->type == PIPE_COMMAND)
-		return 1;
-//		return 2;
-	else if(command->type == SUBSHELL_COMMAND)
-		return 2;
-//		return 1;
-	else //either AND or OR command
-//		return 3;
 		return 0;
+	else if(command->type == PIPE_COMMAND)
+		return 2;
+	else if(command->type == SUBSHELL_COMMAND)
+		return 1;
+	else //either AND or OR command
+		return 3;
 
 
-//completely messed up, I think
+//fuckin fixed it you shitlord
 }
 
 command_stream_t parse(char **stringArray, unsigned int arrSize){

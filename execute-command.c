@@ -180,10 +180,13 @@ else
 }
 }
 
-dependencyGraph create_graph(command_stream_t cs){
 //	dependencyGraph* result = malloc(sizeof(dependencyGraph));
 //	result->ndSize = 0;
 //	result->dSize  = 0;
+dependencyGraph create_graph(command_stream_t cs){
+	dependencyGraph* result = malloc(sizeof(dependencyGraph));
+	result->ndSize = 0;
+	result->dSize  = 0;
 	listNode* current = malloc(sizeof(listNode));
 	listNode* start = current;
 	current->next = NULL;
@@ -212,6 +215,9 @@ dependencyGraph create_graph(command_stream_t cs){
 	//build it forward, not backwards
 	return buildItBro(start);
 }
+	
+
+
 
 
 
