@@ -199,23 +199,23 @@ while(( c = get_next_byte(get_next_byte_argument)) &&( c != EOF))
 		//assume that only valid inputs are allowed
 		if (c == '(' || c == ')' || c == ';')
 		{
-		//These are singular operands, always, so this should push
-		//and create a new cstring
-		if (c == '(')
-			openCount++;
-		if (c == ')')
-			closeCount++;	
-		
+			//These are singular operands, always, so this should push
+			//and create a new cstring
+			if (c == '(')
+				openCount++;
+			if (c == ')')
+				closeCount++;	
+			
 
-		strcat(currentString, &c);
-		strcat(currentString, nullpoint);
-		stringArray[maxArrayElem] = currentString;
-		currentString = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
-		currentPos = 0;
-		maxArrayElem++;
-		prev_c = '\0'; //kind of hacky, but ensures the next
-				// iteration will
-				//be an append instead of a string-push
+			//strcat(currentString, &c);
+			strcat(currentString, nullpoint);
+			stringArray[maxArrayElem] = currentString;
+			currentString = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+			currentPos = 0;
+			maxArrayElem++;
+			prev_c = '\0'; //kind of hacky, but ensures the next
+					// iteration will
+					//be an append instead of a string-push
 		}
 		else if(((isOperand(c) != isOperand(prev_c)) ||
 			 (c != '\n' && prev_c == '\n')) ||
