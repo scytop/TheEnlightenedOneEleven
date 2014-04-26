@@ -15,7 +15,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define GRAPH_SIZE 25
+/*#define GRAPH_SIZE 25
 
 int
 command_status (command_t c)
@@ -41,7 +41,7 @@ typedef struct string_q{
 char* str;
 struct string_q* next;
 }string_q;
-/*
+
 bool hasSimilar(string_q* l1, string_q* l2)
 {
 //returns true if there exists an element that occurs
@@ -61,7 +61,7 @@ else
 	return(t1, t2->next); 
 }*/
 
-bool hasSimilar(string_q* l1, string_q* l2)
+/*bool hasSimilar(string_q* l1, string_q* l2)
 {
 string_q* start = l2;
 while(l1 != NULL)
@@ -214,10 +214,8 @@ dependencyGraph create_graph(command_stream_t cs){
 	//start has a linked list of read/write listnodes
 	//build it forward, not backwards
 	return buildItBro(start);
-}
+}*/
 	
-
-
 
 
 
