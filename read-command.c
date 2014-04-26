@@ -310,7 +310,7 @@ void checkDontShrek(char** array, unsigned int *arraySize){
 	if(isOperand(array[i][0]) && (strlen(array[i]) >=3)&&
 		array[i][0] != '\n') 
 		error(7,7,"2 many operands"); //3 operands in a row
-	if(strcmp(array[i][0],"<") == 0 || strcmp(array[i][0],">") == 0 || 
+	if(strcmp(array[i],"<") == 0 || strcmp(array[i],">") == 0 || 
 				//carrot at beginning or end
 		array[i][strlen(array[i])-1] == '>' ||
 		array[i][strlen(array[i])-1] == '<')
@@ -422,9 +422,25 @@ void makeSimpleCommand(command_t result, char* curString){
 //		free(comString);
 }
 
-//command_t subIOCheck(command_t result, char *nextString){
-//	if(nextString[0] == '<')
-//}
+/*void subIOCheck(command_t result, char *nextString){
+	int k;
+	if(nextString[0] == '<'){
+		char* input = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+		for(k = 1; nextString[k] != '\0'; k++){
+			strcat(input, nextString[k]);
+		}
+		result->input = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+		strcpy(result->input, input);
+	}
+	else if(nextString[0] == '>'){
+		char* output = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+		for(k = 1; nextString[k] != '\0'; k++){
+			strcat(output, nextString[k]);
+		}
+		result->input = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+		strcpy(result->input, input);
+	}
+}*/
 
 command_t makeCommand(char *curString, char *nextString, int type){
 	command_t result = malloc(sizeof(struct command));
@@ -460,8 +476,9 @@ command_t makeCommand(char *curString, char *nextString, int type){
 		makeSimpleCommand(result, curString);
 	}
 
-	//if(type == 6)
-	//	subIOCheck(result, nextString);
+	if(type == 6)
+		if(nextString[0] == '<' || nextString[0] == '>')
+			makeSimpleCommand(result, nextString);
 
 	return result;
 }
