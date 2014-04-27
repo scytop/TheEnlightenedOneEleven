@@ -274,7 +274,7 @@ void executingSubshell(command_t c){
   else if(pid == 0){
     //execute_switch(c->u.subshell_command);
 
-    /*if (c->input != NULL){
+    if (c->input != NULL){
       int in = open(c->input, O_RDWR);
       dup2(in, 0);
       close(in);
@@ -283,7 +283,8 @@ void executingSubshell(command_t c){
       int out = open(c->output, O_CREAT | O_WRONLY | O_TRUNC,
           S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR);
       dup2(out, 1);
-      close(out);*/
+      close(out);
+    }
 
     execute_switch(c->u.subshell_command);
     _exit(c->u.subshell_command->status);

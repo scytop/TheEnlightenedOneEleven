@@ -361,33 +361,39 @@ void makeSimpleCommand(command_t result, char* curString){
 			else if(curString[k] == '<'){
 				count = 1;
 				//(result->u.word) = &str;	
-				destroyBeginSpaces(str);
-				destroyEndSpaces(str);
-				/*char* tempdoe = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
-				strcpy(tempdoe, str);
-				char ** temp2 = malloc(sizeof(char*));
-				*temp2 = tempdoe;*/
-				result->u.word = tokenize_expression(str);
-				str[0] = '\0';
+				if(k != 0){
+					destroyBeginSpaces(str);
+					destroyEndSpaces(str);
+				
+					/*char* tempdoe = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+					strcpy(tempdoe, str);
+					char ** temp2 = malloc(sizeof(char*));
+					*temp2 = tempdoe;*/
+					result->u.word = tokenize_expression(str);
+					str[0] = '\0';
+				}
 			}
 			else if(curString[k] == '>'){
-				destroyBeginSpaces(str);
-				destroyEndSpaces(str);
-
-				if(count == 1){
-				//	result->input = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
-				//	*(result->input) = str;
-				//	str[0] = '\0';
-				char* tempdoe = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
-				strcpy(tempdoe, str);
-				result->input = tempdoe;
+				if(k != 0){
+					destroyBeginSpaces(str);
+					destroyEndSpaces(str);
 				
-				}
-				else if(count == 0){
+
+					if(count == 1){
+					//	result->input = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+					//	*(result->input) = str;
+					//	str[0] = '\0';
+					char* tempdoe = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+					strcpy(tempdoe, str);
+					result->input = tempdoe;
 					
-					/*char* temp4 = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
-					strcpy(temp4, str);*/
-					result->u.word= tokenize_expression(str);
+					}
+					else if(count == 0){
+						
+						/*char* temp4 = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
+						strcpy(temp4, str);*/
+						result->u.word= tokenize_expression(str);
+					}
 				}
 				count = 2;
 				
@@ -442,7 +448,7 @@ void makeSimpleCommand(command_t result, char* curString){
 	}
 }*/
 
-command_t makeCommand(char *curString, char *nextString, int type){
+command_t makeCommand(char *curString, int type){
 	command_t result = malloc(sizeof(struct command));
 
 	//set type of command
@@ -476,9 +482,9 @@ command_t makeCommand(char *curString, char *nextString, int type){
 		makeSimpleCommand(result, curString);
 	}
 
-	if(type == 6)
-		if(nextString[0] == '<' || nextString[0] == '>')
-			makeSimpleCommand(result, nextString);
+	//if(type == 6)
+	//	if(nextString[0] == '<' || nextString[0] == '>')
+	//		makeSimpleCommand(result, nextString);
 
 	return result;
 }
@@ -561,8 +567,11 @@ command_stream_t parse(char **stringArray, unsigned int arrSize){
 			}//TODO: what happens if there's double paren, e.g. ))
 			command_t command1 = peek(&comStack);
 				pop(&comStack);
-			command_t newCommand =
-			combineCommand(command1, command1, topOp);
+			command_t newCommand = combineCommand(command1, command1, topOp);
+			if(stringArray[k+1][0] == '<' || stringArray[k+1][0] == '>'){
+				makeSimpleCommand(newCommand, stringArray[k+1]);
+				k += 2;
+			}
 			push(&comStack, newCommand);
 			continue;
 		}
@@ -592,7 +601,7 @@ command_stream_t parse(char **stringArray, unsigned int arrSize){
 		}
 
 		command_t curCommand = malloc(sizeof(struct command));
-		curCommand = makeCommand(stringArray[k], stringArray[k+1], comType);
+		curCommand = makeCommand(stringArray[k], comType);
 		if(curCommand->type == SIMPLE_COMMAND) //not an operator
 			push(&comStack, curCommand);
 		else if(curCommand->type == SUBSHELL_COMMAND) //encounter open paren
