@@ -374,6 +374,7 @@ void makeSimpleCommand(command_t result, char* curString){
 				}
 			}
 			else if(curString[k] == '>'){
+				count = 2;
 				if(k != 0){
 					destroyBeginSpaces(str);
 					destroyEndSpaces(str);
@@ -395,8 +396,9 @@ void makeSimpleCommand(command_t result, char* curString){
 						result->u.word= tokenize_expression(str);
 					}
 				}
-				count = 2;
-				
+				else if(k == 0){
+
+				}
 				str[0] = '\0';
 			}
 		}
@@ -570,7 +572,7 @@ command_stream_t parse(char **stringArray, unsigned int arrSize){
 			command_t newCommand = combineCommand(command1, command1, topOp);
 			if(stringArray[k+1][0] == '<' || stringArray[k+1][0] == '>'){
 				makeSimpleCommand(newCommand, stringArray[k+1]);
-				k += 2;
+				k++;
 			}
 			push(&comStack, newCommand);
 			continue;
