@@ -358,7 +358,8 @@ void makeSimpleCommand(command_t result, char* curString){
 			str[strlen(str)] = curString[k];
 			str[charcount + 1] = '\0';
 			}
-			else if(curString[k] == '<'){
+			else if(curString[k] == '<' && curString[k-1] != '<' 
+				&& curString[k+1] != '<'){
 				count = 1;
 				//(result->u.word) = &str;	
 				if(k != 0){
@@ -373,8 +374,9 @@ void makeSimpleCommand(command_t result, char* curString){
 					str[0] = '\0';
 				}
 			}
-			else if(curString[k] == '>'){
-				count = 2;
+			else if(curString[k] == '>'&& curString[k-1] != '>' 
+				&& curString[k+1] != '>'){
+				//count = 2;
 				if(k != 0){
 					destroyBeginSpaces(str);
 					destroyEndSpaces(str);
@@ -400,6 +402,7 @@ void makeSimpleCommand(command_t result, char* curString){
 
 				}
 				str[0] = '\0';
+				count = 2;
 			}
 		}
 		destroyBeginSpaces(str);

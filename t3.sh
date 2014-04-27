@@ -1,0 +1,1 @@
+(fail || sort) < main.c
