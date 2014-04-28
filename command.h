@@ -4,6 +4,10 @@
 
 typedef struct command *command_t;
 typedef struct command_stream *command_stream_t;
+typedef struct graphNode graphNode;
+typedef struct string_q string_q;
+typedef struct listNode listNode;
+typedef struct dependencyGraph dependencyGraph;
 
 /* Create a command stream from GETBYTE and ARG.  A reader of
    the command stream will invoke GETBYTE (ARG) to get the next byte.
@@ -24,3 +28,4 @@ void execute_command (command_t, bool);
 /* Return the exit status of a command, which must have previously
    been executed.  Wait for the command, if it is not already finished.  */
 int command_status (command_t);
+

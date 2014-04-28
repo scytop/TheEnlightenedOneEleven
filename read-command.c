@@ -103,7 +103,8 @@ void destroyEndSpaces(char * input){
 
 char** tokenize_expression(char* str){
 int len = strlen(str);
-char** tokens = checked_malloc(len*sizeof(char*));
+int lSize = (len*sizeof(char*));
+char** tokens = malloc(lSize);
 char* temp = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
 int counter = 0;
 int i = 0;
@@ -347,7 +348,6 @@ void makeSimpleCommand(command_t result, char* curString){
 		int k=0;
 		int count = 0;
 		char* str = malloc(sizeof(char)*DEFAULT_BUFFER_SIZE);
-		char* tmp = malloc(sizeof(char)*2);
 		//result->u.word = malloc(sizeof(char));
 		for(k=0; curString[k] != '\0';k++){
 			if(curString[k] != '<' && curString[k] != '>'){
