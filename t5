@@ -1,0 +1,5 @@
+sleep 5 && echo dreck
+
+sleep 3 && echo is
+
+sleep 1 && echo shrek

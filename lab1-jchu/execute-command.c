@@ -141,7 +141,7 @@ listNode* checkNode = malloc(sizeof(listNode));
 	}
 	current = current->next;
 	}
-	//ok all these bitches should have their deps
+	//ok all these should have their deps
 	
 	while(start != NULL)
 	{

@@ -518,7 +518,6 @@ int precedence(command_t command){
 		return 3;
 
 
-//fuckin fixed it you shitlord
 }
 
 command_stream_t parse(char **stringArray, unsigned int arrSize){

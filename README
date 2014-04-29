@@ -14,4 +14,12 @@ The current limitations is that there is some memory reallocation
 that doesn't work correctly, but so long as it doesn't go 
 over 50 bytes it shouldn't be a problem.
 
-Timetravel has not been implemented yet.
+Time Travel has been implemented, but it is difficult to test.
+
+The dependency graph effectively has 2 arrays: one with dependencies,
+and one without.  When run in time travel, it creates the dependencygraph,
+and doesn't run the regular "read command execute command" code.  Instead,
+it seperates the nodes into those with dependencies and those without.
+The ones with dependencies will wait for the dependencies to resolve, while
+the no dependency nodes will just execute in parallel.  It seems to work for
+the test cases we presented, so that's nice.
