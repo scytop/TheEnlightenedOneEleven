@@ -2,6 +2,7 @@ a
 alloc.c
 alloc.h
 alloc.o
+as
 asd
 a.txt
 b2
@@ -22,7 +23,6 @@ helper functions.c
 io
 jchu.c
 lab1-eileen
-lab1-eileen.tar.gz
 ls.txt
 ls.txt;
 main.c
@@ -34,10 +34,11 @@ print-command.o
 read-command.c
 read-command.o
 README
+t1.sh
 t2.sh
 t3.sh
 tes.sh
-test1.sh
+test3.sh
 test-p-bad.sh
 test-p-ok.sh
 timetrash
